@@ -1,0 +1,13 @@
+{
+  "rules": {
+    "pulse": {
+      "posts":    { ".read": true, ".write": "auth != null" },
+      "meta":     { ".read": true, ".write": "auth != null" },
+      "usedUrls": { ".read": true, ".write": "auth != null" }
+    },
+    "scholar_cache": {
+      ".read": true,
+      ".write": "auth != null"
+    }
+  }
+}

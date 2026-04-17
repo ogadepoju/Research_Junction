@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<!--
+    scholar-seed.html  —  LOCAL ADMIN TOOL
+    ───────────────────────────────────────
+    Open this file in your browser to update your Scholar stats.
+    Writes directly to Firebase via REST (no SDK auth needed).
+    DELETE this file before deploying publicly.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scholar Cache Seeder</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: system-ui, sans-serif; max-width: 520px; margin: 60px auto; padding: 0 24px; background: #f8fafc; color: #0f172a; }
+        h1   { font-size: 1.5rem; margin-bottom: 6px; }
+        .sub { color: #64748b; font-size: 0.85rem; margin-bottom: 8px; line-height: 1.6; }
+        .rules-box {
+            background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px;
+            padding: 16px 20px; margin-bottom: 28px; font-size: 0.8rem; line-height: 1.7;
+        }
+        .rules-box strong { color: #92400e; }
+        pre {
+            background: #1e293b; color: #93c5fd; padding: 14px 16px;
+            border-radius: 10px; font-size: 0.78rem; overflow-x: auto;
+            margin: 8px 0 0; white-space: pre-wrap;
+        }
+        label  { display: block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; margin-bottom: 6px; margin-top: 16px; }
+        input  { display: block; width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 1.2rem; font-weight: 700; background: white; }
+        input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .btn   { display: block; width: 100%; margin-top: 28px; padding: 15px; background: #0f172a; color: white; border: none; border-radius: 12px; font-size: 0.9rem; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; }
+        .btn:hover { background: #2563eb; }
+        #result { margin-top: 18px; padding: 16px 20px; border-radius: 12px; font-size: 0.85rem; display: none; line-height: 1.6; }
+        .success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+        .error   { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+        a { color: #2563eb; }
+        .divider { border: none; border-top: 1px solid #e2e8f0; margin: 32px 0; }
+        .alt-title { font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<h1>Scholar Cache Seeder</h1>
+<p class="sub">
+    Enter your current stats from your
+    <a href="https://scholar.google.com/citations?user=XT483uIAAAAJ&hl=en" target="_blank">Google Scholar profile</a>.
+    Run this whenever your citation count changes.
+</p>
+
+<div class="rules-box">
+    <strong>⚠ First-time setup — fix your Firebase rules</strong><br>
+    In <a href="https://console.firebase.google.com/project/insight-3bbec/database/insight-3bbec-default-rtdb/rules" target="_blank">Firebase Console → Realtime Database → Rules</a>,
+    replace the rules with this and click <strong>Publish</strong>:
+    <pre>{
+  "rules": {
+    "pulse": {
+      "posts":    { ".read": true,  ".write": false },
+      "meta":     { ".read": true,  ".write": false },
+      "usedUrls": { ".read": false, ".write": false }
+    },
+    "scholar_cache": { ".read": true, ".write": true }
+  }
+}</pre>
+    After saving your stats below, change <code>".write": true</code> back to <code>".write": false</code>
+    to lock it down again.
+</div>
+
+<label>Total Citations (All Time)</label>
+<input type="number" id="citations" placeholder="e.g. 73" min="0">
+
+<label>h-index</label>
+<input type="number" id="hindex" placeholder="e.g. 5" min="0">
+
+<label>i10-index</label>
+<input type="number" id="i10" placeholder="e.g. 3" min="0">
+
+<button class="btn" onclick="seedCache()">Save to Firebase</button>
+<div id="result"></div>
+
+<hr class="divider">
+
+<p class="alt-title">OR — paste this into Firebase Console directly</p>
+<p class="sub">
+    Go to <a href="https://console.firebase.google.com/project/insight-3bbec/database/insight-3bbec-default-rtdb/data" target="_blank">Firebase Console → Realtime Database → Data</a>,
+    click the <strong>+</strong> button next to the root, add a node called
+    <code>scholar_cache</code> and paste the JSON below (edit your numbers first):
+</p>
+<pre id="manualJson">{
+  "citations": 0,
+  "hIndex": 0,
+  "i10Index": 0,
+  "source": "manual-seed",
+  "fetchedAt": ""
+}</pre>
+
+<script>
+    const DB_URL = 'https://insight-3bbec-default-rtdb.firebaseio.com';
+
+    // Keep the manual JSON preview in sync with the inputs
+    ['citations','hindex','i10'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updatePreview);
+    });
+
+    function updatePreview() {
+        const c  = document.getElementById('citations').value || 0;
+        const h  = document.getElementById('hindex').value    || 0;
+        const i  = document.getElementById('i10').value       || 0;
+        document.getElementById('manualJson').textContent =
+`{
+  "citations": ${c},
+  "hIndex": ${h},
+  "i10Index": ${i},
+  "source": "manual-seed",
+  "fetchedAt": "${new Date().toISOString()}"
+}`;
+    }
+
+    async function seedCache() {
+        const citations = parseInt(document.getElementById('citations').value, 10);
+        const hIndex    = parseInt(document.getElementById('hindex').value,    10);
+        const i10Index  = parseInt(document.getElementById('i10').value,       10);
+        const result    = document.getElementById('result');
+
+        if (isNaN(citations) || isNaN(hIndex) || isNaN(i10Index)) {
+            show('error', 'Please fill in all three fields.');
+            return;
+        }
+
+        const payload = {
+            citations,
+            hIndex,
+            i10Index,
+            source:    'manual-seed',
+            fetchedAt: new Date().toISOString(),
+        };
+
+        try {
+            // Use REST API directly — no SDK, no auth middleware
+            const res = await fetch(`${DB_URL}/scholar_cache.json`, {
+                method:  'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify(payload),
+            });
+
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`Firebase ${res.status}: ${text}`);
+            }
+
+            show('success',
+                `✓ Saved! Citations: <strong>${citations}</strong> · h-index: <strong>${hIndex}</strong> · i10: <strong>${i10Index}</strong><br>
+                <small style="opacity:0.8">
+                    The community page will show these numbers immediately.<br>
+                    Remember to set <code>scholar_cache .write: false</code> in Firebase rules.
+                </small>`
+            );
+
+        } catch (err) {
+            show('error',
+                `Write failed: <strong>${err.message}</strong><br>
+                <small>Make sure you set <code>.write: true</code> for scholar_cache in Firebase rules first.</small>`
+            );
+        }
+    }
+
+    function show(type, html) {
+        const el = document.getElementById('result');
+        el.className = type;
+        el.style.display = 'block';
+        el.innerHTML = html;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Pulse | Research Junction Insights</title>
+    <meta name="description" content="Medical research intelligence, curated and reframed for researchers, clinicians, and academics — automatically.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Firebase MUST load before app script -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <script>
+        firebase.initializeApp({
+            apiKey: "AIzaSyAJfy7YT86H6eXVnZtMdyNtMhTPB80LLsI",
+            authDomain: "insight-3bbec.firebaseapp.com",
+            projectId: "insight-3bbec",
+            storageBucket: "insight-3bbec.firebasestorage.app",
+            messagingSenderId: "582201121128",
+            appId: "1:582201121128:web:f61c6323e8ac039524dedd",
+            databaseURL: "https://insight-3bbec-default-rtdb.firebaseio.com"
+        });
+        window.db = firebase.database();
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        :root { --blue:#2563eb; --dark:#0f172a; --mid:#1e293b; }
+
+        body { font-family:'Plus Jakarta Sans',sans-serif; background:#f0f7ff; color:var(--dark); }
+        .serif  { font-family:'Instrument Serif',serif; }
+        .grotesk{ font-family:'Space Grotesk',sans-serif; }
+
+        .glass-nav { background:rgba(255,255,255,0.9);backdrop-filter:blur(15px);border-bottom:1px solid rgba(0,0,0,0.05); }
+        .nav-link { padding:0.5rem 1rem;font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;font-weight:600;transition:all 0.2s;border-radius:999px; }
+        .nav-link:hover { color:var(--blue);background:rgba(37,99,235,0.06); }
+
+        .hero-banner { background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#2563eb 100%);padding:7rem 1.5rem 3rem; }
+
+        .filter-pill { padding:0.4rem 1rem;border-radius:999px;font-size:0.7rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;border:1px solid #e2e8f0;background:white;color:#64748b;cursor:pointer;transition:all 0.2s; }
+        .filter-pill.active,.filter-pill:hover { background:var(--blue);border-color:var(--blue);color:white; }
+
+        .hero-card { background:white;border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(15,23,42,0.12);cursor:pointer;transition:transform 0.3s,box-shadow 0.3s; }
+        .hero-card:hover { transform:translateY(-4px);box-shadow:0 30px 80px rgba(15,23,42,0.18); }
+
+        .post-card { background:white;border-radius:20px;overflow:hidden;border:1px solid #e2e8f0;cursor:pointer;transition:all 0.3s; }
+        .post-card:hover { border-color:var(--blue);transform:translateY(-3px);box-shadow:0 12px 32px rgba(37,99,235,0.1); }
+
+        .badge-full   { background:#eff6ff;color:#2563eb; }
+        .badge-digest { background:#fef3c7;color:#d97706; }
+        .badge { font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;padding:3px 9px;border-radius:999px; }
+        .source-tag { font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#64748b; }
+
+        .modal-overlay { position:fixed;inset:0;z-index:200;background:rgba(15,23,42,0.75);backdrop-filter:blur(8px);display:none;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto; }
+        .modal-overlay.open { display:flex; }
+        .modal-box { background:white;border-radius:28px;width:100%;max-width:760px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.3);margin:auto; }
+
+        .post-body h1 { font-family:'Instrument Serif',serif;font-size:2rem;line-height:1.2;color:var(--dark);margin-bottom:0.5rem; }
+        .post-body h2 { font-family:'Space Grotesk',sans-serif;font-size:0.85rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.1em;margin-top:2rem;margin-bottom:0.6rem; }
+        .post-body h3 { font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:var(--dark);margin-top:1.5rem;margin-bottom:0.4rem; }
+        .post-body p  { margin-bottom:1.1rem;line-height:1.8;color:#334155; }
+        .post-body ul,.post-body ol { margin-left:1.5rem;margin-bottom:1.1rem; }
+        .post-body li { margin-bottom:0.35rem;color:#334155; }
+        .post-body strong { color:var(--dark);font-weight:700; }
+        .post-body em    { font-style:italic;color:#475569; }
+        .post-body blockquote { border-left:4px solid var(--blue);padding:0.8rem 1.2rem;background:#eff6ff;border-radius:0 10px 10px 0;margin:1.5rem 0;font-style:italic;color:#334155; }
+        .post-body hr { border:none;border-top:1px solid #e2e8f0;margin:2rem 0; }
+
+        .status-bar { background:var(--dark);color:white;padding:0.5rem 1rem;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem; }
+
+        .skeleton { background:linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px; }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+        .pulse-dot { width:8px;height:8px;background:#22c55e;border-radius:50%;animation:pdot 2s infinite; }
+        @keyframes pdot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+
+        .admin-panel { position:fixed;bottom:1.5rem;right:1.5rem;z-index:100;display:none; }
+        .admin-btn { width:48px;height:48px;background:var(--dark);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.3);transition:all 0.2s;border:none;font-size:1rem; }
+        .admin-btn:hover { background:var(--blue);transform:scale(1.1); }
+        .admin-menu { position:absolute;bottom:56px;right:0;background:white;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.15);padding:0.5rem;width:200px;display:none; }
+        .admin-menu.open { display:block; }
+        .admin-menu button { width:100%;text-align:left;padding:0.6rem 0.8rem;font-size:0.8rem;font-weight:600;border-radius:10px;border:none;background:transparent;cursor:pointer;transition:background 0.2s;color:var(--dark); }
+        .admin-menu button:hover { background:#f1f5f9; }
+        .admin-menu button.danger { color:#ef4444; }
+        .admin-menu button.danger:hover { background:#fef2f2; }
+    </style>
+</head>
+<body>
+
+<div class="status-bar" id="statusBar">
+    <div class="flex items-center gap-2">
+        <div class="pulse-dot" id="statusDot"></div>
+        <span id="statusText">Initializing The Pulse...</span>
+    </div>
+    <span id="nextUpdateText"></span>
+</div>
+
+<nav class="fixed w-full z-50 glass-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+            <a href="/" class="flex items-center gap-2">
+                <div class="w-10 h-10 border-2 border-blue-600 flex items-center justify-center">
+                    <i class="text-blue-600 text-xl"><img src="logo.png"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-xl leading-none text-black tracking-tighter">RESEARCH <span class="text-blue-600">JUNCTION</span></span>
+                    <span class="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Collaborative Science</span>
+                </div>
+            </a>
+            <div class="hidden md:flex space-x-2 items-center">
+                <a href="#tracks"         class="nav-link text-gray-600">Access Tracks</a>
+                <a href="#workflow"       class="nav-link text-gray-600">Workflow</a>
+                <a href="#accountability" class="nav-link text-gray-600">Accountability</a>
+                <a href="/pulse.html"     class="nav-link text-gray-600">Insights</a>
+                <a href="/manuscript.html" class="ml-4 bg-blue-600 text-white px-6 py-2 rounded-full text-xs font-bold hover:bg-black transition-all shadow-lg uppercase tracking-widest">Submit Manuscript</a>
+            </div>
+    <!-- Mobile hamburger -->
+            <button id="menuBtn" class="md:hidden text-gray-600 hover:text-blue-600 p-2" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-2">
+        <a href="/" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">Home</a>
+        <a href="/#tracks" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">Access Tracks</a>
+        <a href="/manuscript.html" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">The Accelerator</a>
+        <a href="/pulse.html" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">The Pulse</a>
+        <a href="/manuscript.html" class="block w-full text-center py-3 bg-blue-600 text-white rounded-full text-xs font-bold hover:bg-black transition uppercase tracking-widest">Submit Manuscript</a>
+    </div>
+</nav>
+
+<div class="hero-banner">
+    <div class="max-w-5xl mx-auto text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-white/70 text-xs font-bold uppercase tracking-widest mb-5">
+            <i class="fas fa-satellite-dish text-blue-400"></i>
+            Auto-updating every 4 hours
+        </div>
+        <h1 class="serif text-5xl md:text-6xl text-white mb-3 leading-tight">The <em>Pulse</em></h1>
+        <p class="text-white/60 text-lg max-w-xl mx-auto">
+            Medical research intelligence, curated and reframed for researchers, clinicians, and academics — automatically.
+        </p>
+    </div>
+</div>
+
+<div class="bg-white border-b border-slate-100 sticky top-20 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-2 overflow-x-auto">
+        <button class="filter-pill active" onclick="filterPosts('all', this)">All Sources</button>
+        <button class="filter-pill" onclick="filterPosts('NEJM', this)">NEJM</button>
+        <button class="filter-pill" onclick="filterPosts('The Lancet', this)">The Lancet</button>
+        <button class="filter-pill" onclick="filterPosts('JAMA', this)">JAMA</button>
+        <button class="filter-pill" onclick="filterPosts('BMJ', this)">BMJ</button>
+        <button class="filter-pill" onclick="filterPosts('Nature Medicine', this)">Nature Medicine</button>
+        <button class="filter-pill" onclick="filterPosts('Science Daily', this)">Science Daily</button>
+        <button class="filter-pill" onclick="filterPosts('Medscape', this)">Medscape</button>
+        <button class="filter-pill" onclick="filterPosts('Stat News', this)">Stat News</button>
+        <button class="filter-pill" onclick="filterPosts('Medical News Today', this)">MNT</button>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 py-12" id="mainContent">
+    <div id="loadingSkeleton">
+        <div class="skeleton h-64 w-full mb-8 rounded-[28px]"></div>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="skeleton h-48 rounded-[20px]"></div>
+            <div class="skeleton h-48 rounded-[20px]"></div>
+            <div class="skeleton h-48 rounded-[20px]"></div>
+        </div>
+    </div>
+    <div id="emptyState" class="hidden text-center py-24">
+        <i class="fas fa-satellite-dish text-5xl text-slate-200 mb-4"></i>
+        <h3 class="grotesk text-xl font-bold text-slate-400 mb-2">First run in progress</h3>
+        <p class="text-slate-400 text-sm max-w-sm mx-auto">The Pulse is scanning medical journals for the latest research. First posts will appear shortly.</p>
+    </div>
+    <div id="heroPost" class="hidden mb-10"></div>
+    <div id="postsGrid" class="hidden grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+</div>
+
+<!-- POST MODAL -->
+<div class="modal-overlay" id="postModal" onclick="closeModal(event)">
+    <div class="modal-box" id="modalBox">
+        <div class="bg-slate-900 px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="badge" id="modalBadge"></span>
+                <span class="source-tag text-white/50" id="modalSource"></span>
+            </div>
+            <button onclick="closeModalDirect()" class="text-white/50 hover:text-white transition text-xl">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-8 md:p-10 post-body overflow-y-auto max-h-[75vh]" id="modalContent"></div>
+        <div class="px-8 py-5 border-t border-slate-100 flex items-center justify-between bg-slate-50">
+            <a href="#" id="modalSourceLink" target="_blank" rel="noopener noreferrer"
+               class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-widest">
+                <i class="fas fa-external-link-alt mr-1"></i> Read Original
+            </a>
+            <span class="text-xs text-slate-400" id="modalTime"></span>
+        </div>
+    </div>
+</div>
+
+<!-- ADMIN (revealed by Shift+R then Shift+J) -->
+<div class="admin-panel">
+    <div class="admin-menu" id="adminMenu">
+        <button onclick="triggerManualUpdate()"><i class="fas fa-rotate mr-2 text-blue-500"></i>Force Update Now</button>
+        <button onclick="showStats()"><i class="fas fa-chart-bar mr-2 text-green-500"></i>View Stats</button>
+        <button onclick="clearAllPosts()" class="danger"><i class="fas fa-trash mr-2"></i>Clear All Posts</button>
+    </div>
+    <button class="admin-btn" onclick="toggleAdminMenu()" title="Admin">
+        <i class="fas fa-cog"></i>
+    </button>
+</div>
+
+<footer class="bg-black text-white pt-16 pb-8 mt-16">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+        <div class="flex items-center justify-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-full border border-blue-600 flex items-center justify-center">
+                <i class="fas fa-microscope text-blue-600 text-sm"></i>
+            </div>
+            <span class="font-bold text-lg tracking-tighter">RESEARCH <span class="text-blue-600">JUNCTION</span></span>
+        </div>
+        <p class="text-gray-500 text-xs uppercase tracking-widest">&copy; 2026 Research Junction · The Pulse updates automatically every 4 hours.</p>
+    </div>
+</footer>
+
+<script>
+const GEMINI_MODEL = 'gemini-2.5-flash-preview-04-17';
+const UPDATE_INTERVAL  = 4 * 60 * 60 * 1000;
+const MAX_POSTS        = 50;
+
+const SOURCES = [
+    { name:'NEJM',               query:'latest medical research NEJM New England Journal Medicine' },
+    { name:'The Lancet',         query:'latest research The Lancet medical journal' },
+    { name:'JAMA',               query:'latest JAMA Journal American Medical Association research' },
+    { name:'BMJ',                query:'latest BMJ British Medical Journal research' },
+    { name:'Nature Medicine',    query:'latest Nature Medicine journal research' },
+    { name:'Science Daily',      query:'latest medical research Science Daily health' },
+    { name:'Medscape',           query:'latest Medscape medical news clinical research' },
+    { name:'Stat News',          query:'latest Stat News medical research health' },
+    { name:'Medical News Today', query:'latest Medical News Today health research' }
+];
+
+const SANDRA_SYSTEM = `You are writing for Research Junction, a medical research education brand founded by Sandra Bakare MD/MBA.
+
+Sandra's voice is:
+- Authoritative but accessible — knowledgeable colleague, not a textbook
+- Direct and confident — no hedging, no filler
+- Passionate about research methodology and publication strategy  
+- Occasionally uses first-person commentary ("What this means for your research pipeline...")
+- Speaks to medical students, PhD candidates, clinicians, early-career researchers
+- Always connects findings to practical research implications
+
+Brand tone: Relatable, educational, occasionally punchy. Smart friend with an MD/MBA who reviews manuscripts for a living.`;
+
+let allPosts      = [];
+let currentFilter = 'all';
+let isUpdating    = false;
+let countdownEnd  = null;
+let countdownInterval = null;
+
+// ── Firebase helpers ───────────────────────────────────────────
+async function getPosts() {
+    try {
+        const snap = await window.db.ref('pulse/posts').get();
+        if (!snap.exists()) return [];
+        return Object.values(snap.val()).sort((a,b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+    } catch(e) { console.warn('getPosts:', e); return []; }
+}
+async function savePosts(posts) {
+    try {
+        const obj = {};
+        posts.forEach(p => { obj[p.id] = p; });
+        await window.db.ref('pulse/posts').set(obj);
+    } catch(e) { console.warn('savePosts:', e); }
+}
+async function getUsedUrls() {
+    try {
+        const snap = await window.db.ref('pulse/usedUrls').get();
+        return snap.exists() ? snap.val() : [];
+    } catch(e) { return []; }
+}
+async function saveUsedUrls(urls) {
+    try { await window.db.ref('pulse/usedUrls').set(urls); } catch(e) {}
+}
+async function getMeta() {
+    try {
+        const snap = await window.db.ref('pulse/meta').get();
+        return snap.exists() ? snap.val() : { lastUpdate: null };
+    } catch(e) { return { lastUpdate: null }; }
+}
+async function saveMeta(meta) {
+    try { await window.db.ref('pulse/meta').set(meta); } catch(e) {}
+}
+
+// ── Init ───────────────────────────────────────────────────────
+async function init() {
+    setStatus('Loading The Pulse...', true);
+    allPosts = await getPosts();
+    renderPosts(allPosts);
+
+    const meta = await getMeta();
+    const diff = Date.now() - (meta.lastUpdate || 0);
+
+    if (diff >= UPDATE_INTERVAL || allPosts.length === 0) {
+        await runUpdate();
+    } else {
+        const nextIn = UPDATE_INTERVAL - diff;
+        setStatus(`Live · ${allPosts.length} posts`, false);
+        scheduleNextUpdate(nextIn);
+        updateCountdown(nextIn);
+    }
+}
+
+// ── Update cycle ───────────────────────────────────────────────
+async function runUpdate() {
+    if (isUpdating) return;
+    isUpdating = true;
+    setStatus('Scanning journals for new research...', true);
+
+    try {
+        const usedUrls = await getUsedUrls();
+        const shuffled = [...SOURCES].sort(() => Math.random() - 0.5).slice(0, 6);
+
+        for (const source of shuffled) {
+            setStatus(`Reading ${source.name}...`, true);
+            try {
+                const post = await generatePostFromSource(source, usedUrls);
+                if (post) {
+                    usedUrls.push(post.sourceUrl);
+                    allPosts = [post, ...allPosts].slice(0, MAX_POSTS);
+                    renderPosts(allPosts);
+                }
+            } catch(e) { console.warn(`Failed for ${source.name}:`, e); }
+        }
+
+        await savePosts(allPosts);
+        await saveUsedUrls(usedUrls.slice(-500));
+        await saveMeta({ lastUpdate: Date.now() });
+
+        setStatus(`Live · ${allPosts.length} posts · Updated ${new Date().toLocaleTimeString()}`, false);
+        scheduleNextUpdate(UPDATE_INTERVAL);
+        updateCountdown(UPDATE_INTERVAL);
+
+    } catch(e) {
+        setStatus('Update failed — will retry in 4 hours', false);
+        console.error(e);
+    } finally {
+        isUpdating = false;
+    }
+}
+
+// ── Generate post ──────────────────────────────────────────────
+async function generatePostFromSource(source, usedUrls) {
+    const prompt = `Search for the single most impactful, recent medical research article from ${source.name}. 
+
+Rules:
+- Must be genuinely new research (not older than 2 weeks)
+- Must be from ${source.name} specifically
+- Avoid these already-used topics/URLs: ${usedUrls.slice(-20).join(', ') || 'none yet'}
+
+First, decide: is this article significant enough for a FULL POST (major findings, clinical impact, broad relevance) or a QUICK DIGEST (interesting but narrower scope)?
+
+Then write the post. Respond with ONLY valid JSON — no markdown fences, no preamble:
+
+{
+  "title": "compelling headline under 12 words",
+  "source": "${source.name}",
+  "sourceUrl": "actual URL of the article you found",
+  "format": "full",
+  "category": "one of: Clinical Research | AI in Medicine | Oncology | Cardiology | Infectious Disease | Mental Health | Surgery | Public Health | Neurology | Pharmacology",
+  "summary": "2 sentence plain-language summary for the card preview",
+  "content": "full markdown content of the post",
+  "publishedAt": "${new Date().toISOString()}"
+}
+
+For FULL POST content structure:
+# [title]
+## What The Research Found
+[findings]
+## Why This Matters For Your Research  
+[implications]
+## The Research Junction Take
+[Sandra's commentary]
+**Key Takeaway:** [one bold sentence]
+---
+*Originally reported by ${source.name}. Reframed for the Research Junction community.*
+
+For QUICK DIGEST (use "digest" as format value):
+# [title]
+**The headline finding:** [one sentence]
+**Key findings:**
+- [point 1]
+- [point 2]  
+- [point 3]
+**Why researchers should care:** [2 sentences]
+**Sandra's take:** *[one punchy sentence]*
+---
+*Originally reported by ${source.name}. Curated for the Research Junction community.*`;
+
+    const response = await fetch('/.netlify/functions/anthropic-proxy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, systemPrompt: SANDRA_SYSTEM })
+    });
+
+    if (!response.ok) throw new Error('Proxy ' + response.status);
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+
+    const raw = (data.text || '').trim();
+
+    // Extract JSON robustly — find outermost { } and attempt parse
+    const start = raw.indexOf('{');
+    const end   = raw.lastIndexOf('}');
+    if (start === -1 || end === -1) throw new Error('No JSON in response');
+
+    let jsonStr = raw.slice(start, end + 1);
+
+    // Fix common Gemini JSON issues:
+    // 1. Unescaped newlines inside string values
+    jsonStr = jsonStr.replace(/(?<=[":,\[\{]\s*"[^"]*?)\n(?=[^"]*?")/g, '\\n');
+    // 2. Truncate at last complete field if JSON is cut off
+    let post;
+    try {
+        post = JSON.parse(jsonStr);
+    } catch(parseErr) {
+        // Try to salvage by truncating to last valid comma-terminated field
+        const lastComma = jsonStr.lastIndexOf('",');
+        if (lastComma > 0) {
+            try {
+                post = JSON.parse(jsonStr.slice(0, lastComma + 1) + '"_truncated":true}');
+            } catch(e2) {
+                throw new Error('JSON parse failed: ' + parseErr.message);
+            }
+        } else {
+            throw new Error('JSON parse failed: ' + parseErr.message);
+        }
+    }
+    post.id          = 'post_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+    post.publishedAt = post.publishedAt || new Date().toISOString();
+    return post;
+}
+
+// ── Render ─────────────────────────────────────────────────────
+function renderPosts(posts) {
+    document.getElementById('loadingSkeleton').classList.add('hidden');
+
+    const filtered = currentFilter === 'all' ? posts : posts.filter(p => p.source === currentFilter);
+
+    if (!filtered.length) {
+        document.getElementById('emptyState').classList.remove('hidden');
+        document.getElementById('heroPost').classList.add('hidden');
+        document.getElementById('postsGrid').classList.add('hidden');
+        return;
+    }
+
+    document.getElementById('emptyState').classList.add('hidden');
+    document.getElementById('heroPost').classList.remove('hidden');
+    document.getElementById('postsGrid').classList.remove('hidden');
+
+    renderHero(filtered[0]);
+
+    const grid = document.getElementById('postsGrid');
+    grid.innerHTML = filtered.slice(1).map(p => renderCard(p)).join('');
+}
+
+function renderHero(post) {
+    const el = document.getElementById('heroPost');
+    const cc = getCategoryColor(post.category);
+    el.innerHTML = `
+        <div class="hero-card md:flex" onclick="openPost('${escAttr(post.id)}')">
+            <div class="md:flex-1 p-10 md:p-12 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="badge ${post.format==='full'?'badge-full':'badge-digest'}">
+                            ${post.format==='full'?'✦ Full Post':'⚡ Quick Digest'}
+                        </span>
+                        <span class="source-tag">${escHtml(post.source)}</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
+                              style="background:${cc.bg};color:${cc.text}">${escHtml(post.category||'Research')}</span>
+                    </div>
+                    <h2 class="serif text-3xl md:text-4xl font-normal leading-tight text-slate-900 mb-4">${escHtml(post.title)}</h2>
+                    <p class="text-slate-500 leading-relaxed text-sm">${escHtml(post.summary)}</p>
+                </div>
+                <div class="flex items-center justify-between mt-8">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
+                            <i class="fas fa-microscope text-white text-xs"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-700">Sandra Bakare MD/MBA</div>
+                            <div class="text-[10px] text-slate-400">${formatTime(post.publishedAt)}</div>
+                        </div>
+                    </div>
+                    <span class="text-blue-600 text-sm font-bold flex items-center gap-1">Read <i class="fas fa-arrow-right text-xs"></i></span>
+                </div>
+            </div>
+            <div class="md:w-80 bg-gradient-to-br from-slate-800 to-blue-900 flex items-center justify-center p-12 min-h-[200px]">
+                <div class="text-center">
+                    <i class="fas fa-flask text-white/20 text-7xl mb-4"></i>
+                    <div class="text-white/40 text-xs uppercase tracking-widest font-bold">${escHtml(post.source)}</div>
+                </div>
+            </div>
+        </div>`;
+}
+
+function renderCard(post) {
+    const cc = getCategoryColor(post.category);
+    return `
+        <div class="post-card" onclick="openPost('${escAttr(post.id)}')">
+            <div class="bg-gradient-to-br from-slate-800 to-blue-900 h-32 flex items-center justify-center">
+                <i class="fas fa-dna text-white/15 text-5xl"></i>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center gap-2 mb-3 flex-wrap">
+                    <span class="badge ${post.format==='full'?'badge-full':'badge-digest'}">
+                        ${post.format==='full'?'✦ Full':'⚡ Digest'}
+                    </span>
+                    <span class="source-tag">${escHtml(post.source)}</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
+                          style="background:${cc.bg};color:${cc.text}">${escHtml(post.category||'Research')}</span>
+                </div>
+                <h3 class="serif text-lg leading-snug text-slate-900 mb-2">${escHtml(post.title)}</h3>
+                <p class="text-slate-500 text-xs leading-relaxed line-clamp-3">${escHtml(post.summary)}</p>
+                <div class="flex items-center justify-between mt-4 pt-4 border-t border-slate-100">
+                    <span class="text-[10px] text-slate-400">${formatTime(post.publishedAt)}</span>
+                    <span class="text-blue-600 text-xs font-bold">Read <i class="fas fa-arrow-right text-[10px]"></i></span>
+                </div>
+            </div>
+        </div>`;
+}
+
+// ── Modal ──────────────────────────────────────────────────────
+function sanitizeUrl(url) {
+    if (!url) return '#';
+    try {
+        const u = new URL(url);
+        return ['https:', 'http:'].includes(u.protocol) ? url : '#';
+    } catch { return '#'; }
+}
+
+function openPost(postId) {
+    const post = allPosts.find(p => p.id === postId);
+    if (!post) return;
+    document.getElementById('modalBadge').className   = `badge ${post.format==='full'?'badge-full':'badge-digest'}`;
+    document.getElementById('modalBadge').textContent = post.format==='full'?'✦ Full Post':'⚡ Quick Digest';
+    document.getElementById('modalSource').textContent = post.source;
+    document.getElementById('modalContent').innerHTML  = markdownToHtml(post.content);
+    document.getElementById('modalSourceLink').href    = sanitizeUrl(post.sourceUrl);
+    document.getElementById('modalTime').textContent   = formatTime(post.publishedAt);
+    document.getElementById('postModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeModal(e) { if (e.target === document.getElementById('postModal')) closeModalDirect(); }
+function closeModalDirect() { document.getElementById('postModal').classList.remove('open'); document.body.style.overflow = ''; }
+
+// ── Filter ─────────────────────────────────────────────────────
+function filterPosts(source, btn) {
+    currentFilter = source;
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    renderPosts(allPosts);
+}
+
+// ── Admin ──────────────────────────────────────────────────────
+function toggleAdminMenu() { document.getElementById('adminMenu').classList.toggle('open'); }
+async function triggerManualUpdate() { document.getElementById('adminMenu').classList.remove('open'); await runUpdate(); }
+async function clearAllPosts() {
+    if (!confirm('Clear all posts and reset the feed?')) return;
+    document.getElementById('adminMenu').classList.remove('open');
+    await window.db.ref('pulse').remove();
+    allPosts = [];
+    renderPosts([]);
+    await runUpdate();
+}
+async function showStats() {
+    document.getElementById('adminMenu').classList.remove('open');
+    const usedUrls = await getUsedUrls();
+    const meta     = await getMeta();
+    alert(`📊 The Pulse Stats\n\nTotal posts: ${allPosts.length}\nArticles tracked: ${usedUrls.length}\nLast update: ${meta.lastUpdate ? new Date(meta.lastUpdate).toLocaleString() : 'Never'}`);
+}
+
+// ── Countdown ──────────────────────────────────────────────────
+function scheduleNextUpdate(ms) { countdownEnd = Date.now() + ms; setTimeout(runUpdate, ms); }
+function updateCountdown(ms) {
+    if (countdownInterval) clearInterval(countdownInterval);
+    countdownEnd = Date.now() + ms;
+    countdownInterval = setInterval(() => {
+        const remaining = countdownEnd - Date.now();
+        if (remaining <= 0) { clearInterval(countdownInterval); document.getElementById('nextUpdateText').textContent = 'Updating now...'; return; }
+        const h = Math.floor(remaining/3600000), m = Math.floor((remaining%3600000)/60000), s = Math.floor((remaining%60000)/1000);
+        document.getElementById('nextUpdateText').textContent = `Next update in ${h>0?h+'h ':''} ${m}m ${h<1?s+'s':''}`;
+    }, 1000);
+}
+
+// ── Helpers ────────────────────────────────────────────────────
+function setStatus(text, loading) {
+    document.getElementById('statusText').textContent = text;
+    document.getElementById('statusDot').style.background = loading ? '#f59e0b' : '#22c55e';
+}
+function formatTime(iso) {
+    if (!iso) return '';
+    const d = new Date(iso), now = new Date(), diff = (now-d)/1000;
+    if (diff < 60)    return 'Just now';
+    if (diff < 3600)  return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
+function getCategoryColor(cat) {
+    const map = {
+        'Clinical Research':  {bg:'#eff6ff',text:'#2563eb'},
+        'AI in Medicine':     {bg:'#f0fdf4',text:'#16a34a'},
+        'Oncology':           {bg:'#fef2f2',text:'#dc2626'},
+        'Cardiology':         {bg:'#fff7ed',text:'#ea580c'},
+        'Infectious Disease': {bg:'#fefce8',text:'#ca8a04'},
+        'Mental Health':      {bg:'#fdf4ff',text:'#9333ea'},
+        'Surgery':            {bg:'#f0f9ff',text:'#0284c7'},
+        'Public Health':      {bg:'#f0fdf4',text:'#15803d'},
+        'Neurology':          {bg:'#fdf4ff',text:'#7c3aed'},
+        'Pharmacology':       {bg:'#fff1f2',text:'#be123c'},
+    };
+    return map[cat] || {bg:'#f1f5f9',text:'#64748b'};
+}
+function escHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(str) { return (str||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;'); }
+
+function markdownToHtml(md) {
+    if (!md) return '';
+    const lines = md.split('\n');
+    let result = '', inList = false;
+    function fi(t) {
+        t = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        return t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`(.+?)`/g,'<code>$1</code>');
+    }
+    for (let line of lines) {
+        if      (line.startsWith('# '))   { if(inList){result+='</ul>';inList=false;} result+=`<h1>${fi(line.slice(2))}</h1>\n`; }
+        else if (line.startsWith('## '))  { if(inList){result+='</ul>';inList=false;} result+=`<h2>${fi(line.slice(3))}</h2>\n`; }
+        else if (line.startsWith('### ')) { if(inList){result+='</ul>';inList=false;} result+=`<h3>${fi(line.slice(4))}</h3>\n`; }
+        else if (line.startsWith('> '))   { if(inList){result+='</ul>';inList=false;} result+=`<blockquote>${fi(line.slice(2))}</blockquote>\n`; }
+        else if (line.startsWith('- '))   { if(!inList){result+='<ul>';inList=true;} result+=`<li>${fi(line.slice(2))}</li>\n`; }
+        else if (line==='---')            { if(inList){result+='</ul>';inList=false;} result+='<hr>\n'; }
+        else if (line.trim()==='')        { if(inList){result+='</ul>';inList=false;} }
+        else { if(inList){result+='</ul>';inList=false;} result+=`<p>${fi(line)}</p>\n`; }
+    }
+    if (inList) result += '</ul>';
+    return result;
+}
+
+// Secret admin: Shift+R then Shift+J
+(function() {
+    const SEQ = ['R','J'];
+    let buf = [], adminVisible = false;
+    document.addEventListener('keydown', e => {
+        if (!e.shiftKey) { buf = []; return; }
+        buf.push(e.key.toUpperCase());
+        if (buf.length > SEQ.length) buf.shift();
+        if (buf.join('') === SEQ.join('')) {
+            adminVisible = !adminVisible;
+            document.querySelector('.admin-panel').style.display = adminVisible ? 'block' : 'none';
+            if (!adminVisible) document.getElementById('adminMenu').classList.remove('open');
+            buf = [];
+        }
+    });
+})();
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModalDirect(); });
+
+init();
+</script>
+</body>
+</html>

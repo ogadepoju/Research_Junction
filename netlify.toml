@@ -1,0 +1,46 @@
+[build]
+  functions = "netlify/functions"
+
+[functions."anthropic-proxy"]
+  timeout = 30
+
+[functions."scholar-stats"]
+  timeout = 30
+
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/insight"
+  to = "/pulse.html"
+  status = 200
+
+[[redirects]]
+  from = "/pulse"
+  to = "/pulse.html"
+  status = 200
+
+[[redirects]]
+  from = "/manuscript"
+  to = "/manuscript.html"
+  status = 200
+
+[[redirects]]
+  from = "/academic-track"
+  to = "/academy.html"
+  status = 200
+
+[[redirects]]
+  from = "/the-community"
+  to = "/community.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://script.google.com https://apis.google.com; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://www.gstatic.com https://generativelanguage.googleapis.com https://api.stripe.com https://checkout.stripe.com https://serpapi.com https://api.openalex.org; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; frame-src https://checkout.stripe.com"

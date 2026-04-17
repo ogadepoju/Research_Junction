@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Academy | Research Junction</title>
+    <meta name="description" content="A structured 3-month transition from passive consumer to active producer of medical literature. $30/mo.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@700&display=swap');
+        
+        :root { --brand-blue:#0b66c2; }
+        body { font-family:'Inter',sans-serif; background-color:#f8fafc; color:#1e293b; }
+        h1,h2,h3 { font-family:'Montserrat',sans-serif; }
+
+        .glass-nav { background:rgba(255,255,255,0.85);backdrop-filter:blur(15px);border-bottom:1px solid rgba(0,0,0,0.05); }
+        .nav-link { padding:0.5rem 1rem;transition:all 0.3s ease;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;font-weight:600; }
+        .nav-link:hover { color:var(--brand-blue);background:rgba(11,102,194,0.05);border-radius:9999px; }
+
+        .timeline-line { position:absolute;left:20px;top:0;bottom:0;width:2px;background:#e2e8f0;z-index:0; }
+        .step-node { width:42px;height:42px;background:white;border:2px solid #0b66c2;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:bold;z-index:10;position:relative; }
+        .glass-card { background:rgba(255,255,255,0.8);backdrop-filter:blur(10px);border:1px solid rgba(226,232,240,0.8); }
+    </style>
+</head>
+<body>
+
+<nav class="fixed w-full z-50 glass-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+            <a href="/" class="flex items-center gap-2">
+                <div class="w-10 h-10 border-2 border-blue-600 flex items-center justify-center">
+                    <i class="text-blue-600 text-xl"><img src="logo.png"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-xl leading-none text-black tracking-tighter">RESEARCH <span class="text-blue-600">JUNCTION</span></span>
+                    <span class="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Collaborative Science</span>
+                </div>
+            </a>
+            <div class="hidden md:flex space-x-2 items-center">
+                <a href="#tracks"         class="nav-link text-gray-600">Access Tracks</a>
+                <a href="#workflow"       class="nav-link text-gray-600">Workflow</a>
+                <a href="#accountability" class="nav-link text-gray-600">Accountability</a>
+                <a href="/pulse.html"     class="nav-link text-gray-600">Insights</a>
+                <a href="/manuscript.html" class="ml-4 bg-blue-600 text-white px-6 py-2 rounded-full text-xs font-bold hover:bg-black transition-all shadow-lg uppercase tracking-widest">Submit Manuscript</a>
+            </div>
+    <!-- Mobile hamburger -->
+            <button id="menuBtn" class="md:hidden text-gray-600 hover:text-blue-600 p-2" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-2">
+        <a href="/" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">Home</a>
+        <a href="/#tracks" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">Access Tracks</a>
+        <a href="/manuscript.html" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">The Accelerator</a>
+        <a href="/pulse.html" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">The Pulse</a>
+        <a href="/manuscript.html" class="block w-full text-center py-3 bg-blue-600 text-white rounded-full text-xs font-bold hover:bg-black transition uppercase tracking-widest">Submit Manuscript</a>
+    </div>
+</nav>
+
+<div class="pt-20">
+
+    <section class="bg-slate-900 py-20 text-white">
+        <div class="max-w-5xl mx-auto px-6">
+            <span class="text-blue-400 font-bold uppercase tracking-widest text-xs">Track 01: The Academy</span>
+            <h1 class="text-4xl md:text-6xl font-bold mt-4 mb-6 leading-tight">The Investigator's <br>Onboarding</h1>
+            <p class="text-xl text-gray-400 max-w-2xl font-light">
+                A structured 3-month transition from a passive consumer to an active producer of medical literature.
+            </p>
+            <div class="flex flex-wrap gap-6 mt-10">
+                <div class="flex items-center gap-3 bg-white/5 px-5 py-3 rounded-2xl border border-white/10">
+                    <i class="fas fa-calendar-check text-blue-400"></i>
+                    <span class="text-sm font-medium">Weekly Touchpoints</span>
+                </div>
+                <div class="flex items-center gap-3 bg-white/5 px-5 py-3 rounded-2xl border border-white/10">
+                    <i class="fas fa-video text-blue-400"></i>
+                    <span class="text-sm font-medium">Live &amp; Recorded</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 max-w-5xl mx-auto px-6">
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold mb-4">The 90-Day Roadmap</h2>
+            <p class="text-gray-500">Master output, consistency, and correct research practice.</p>
+        </div>
+
+        <div class="relative space-y-16">
+            <div class="timeline-line"></div>
+
+            <!-- Month 1 -->
+            <div class="flex gap-8 relative">
+                <div class="step-node text-blue-600 shadow-lg shadow-blue-100">01</div>
+                <div class="flex-1 glass-card p-8 rounded-[32px] shadow-sm">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold">Narrative &amp; Scoping Mastery</h3>
+                            <p class="text-blue-600 font-semibold text-sm mt-1 uppercase tracking-wider">The Foundation</p>
+                        </div>
+                        <span class="bg-blue-50 text-blue-600 px-4 py-1 rounded-full text-xs font-bold">Month 1</span>
+                    </div>
+                    <ul class="grid md:grid-cols-2 gap-4">
+                        <li class="flex gap-3 text-sm text-gray-600"><i class="fas fa-circle text-[6px] mt-2 text-blue-400"></i><span><b>Scholar's Transition:</b> Mastering the psychology of medical writing.</span></li>
+                        <li class="flex gap-3 text-sm text-gray-600"><i class="fas fa-circle text-[6px] mt-2 text-blue-400"></i><span><b>Structural Literacy:</b> Evaluating paper effectively for high-impact journals.</span></li>
+                        <li class="flex gap-3 text-sm text-gray-600"><i class="fas fa-circle text-[6px] mt-2 text-blue-400"></i><span><b>Narrative Frameworks:</b> Drafting professional Narrative Reviews.</span></li>
+                        <li class="flex gap-3 text-sm text-gray-600"><i class="fas fa-circle text-[6px] mt-2 text-blue-400"></i><span><b>Scoping Methodology:</b> Evidence mapping and introduction to study designs.</span></li>
+                    </ul>
+                    <div class="mt-8 pt-6 border-t border-gray-100 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xs"><i class="fas fa-check"></i></div>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Deliverable: Narrative Review Draft</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Month 2 -->
+            <div class="flex gap-8 relative">
+                <div class="step-node text-blue-600 shadow-lg shadow-blue-100">02</div>
+                <div class="flex-1 glass-card p-8 rounded-[32px] shadow-sm">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold">Advanced Systematic Frameworks</h3>
+                            <p class="text-blue-600 font-semibold text-sm mt-1 uppercase tracking-wider">The Synthesis Engine</p>
+                        </div>
+                        <span class="bg-blue-50 text-blue-600 px-4 py-1 rounded-full text-xs font-bold">Month 2</span>
+                    </div>
+                    <ul class="grid md:grid-cols-2 gap-4">
+                        <li class="flex gap-3 text-sm text-gray-600"><i class="fas fa-circle text-[6px] mt-2 text-blue-400"></i><span><b>Systematic Rigor:</b> Implementing a proven guided framework.</span></li>
+                        <li class="flex gap-3 text-sm text-gray-600"><i class="fas fa-circle text-[6px] mt-2 text-blue-400"></i><span><b>Protocol Integrity:</b> Ethics, referencing, and zero-AI workflow.</span></li>
+                        <li class="flex gap-3 text-sm text-gray-600"><i class="fas fa-circle text-[6px] mt-2 text-blue-400"></i><span><b>Search Excellence:</b> Developing strings for comprehensive evidence retrieval.</span></li>
+                        <li class="flex gap-3 text-sm text-gray-600"><i class="fas fa-circle text-[6px] mt-2 text-blue-400"></i><span><b>Manuscript Flow:</b> Applying writing templates and section workflow.</span></li>
+                    </ul>
+                    <div class="mt-8 pt-6 border-t border-gray-100 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xs"><i class="fas fa-check"></i></div>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Deliverable: Structured Systematic Draft</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Month 3 -->
+            <div class="flex gap-8 relative">
+                <div class="step-node text-blue-600 shadow-lg shadow-blue-100">03</div>
+                <div class="flex-1 glass-card p-8 rounded-[32px] shadow-sm">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold">Analytical &amp; Meta-Analysis Mastery</h3>
+                            <p class="text-blue-600 font-semibold text-sm mt-1 uppercase tracking-wider">The Quantitative Pinnacle</p>
+                        </div>
+                        <span class="bg-blue-50 text-blue-600 px-4 py-1 rounded-full text-xs font-bold">Month 3</span>
+                    </div>
+                    <ul class="grid md:grid-cols-2 gap-4">
+                        <li class="flex gap-3 text-sm text-gray-600"><i class="fas fa-circle text-[6px] mt-2 text-blue-400"></i><span><b>Statistical Logic:</b> Interpreting complex quantitative aggregates.</span></li>
+                        <li class="flex gap-3 text-sm text-gray-600"><i class="fas fa-circle text-[6px] mt-2 text-blue-400"></i><span><b>Data Synthesis:</b> Generating high-level academic deliverables.</span></li>
+                        <li class="flex gap-3 text-sm text-gray-600"><i class="fas fa-circle text-[6px] mt-2 text-blue-400"></i><span><b>Line-by-Line Feedback:</b> Logical flow and argument correction.</span></li>
+                        <li class="flex gap-3 text-sm text-gray-600"><i class="fas fa-circle text-[6px] mt-2 text-blue-400"></i><span><b>Submission Readiness:</b> Professional presentation for publication.</span></li>
+                    </ul>
+                    <div class="mt-8 pt-6 border-t border-gray-100 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xs"><i class="fas fa-check"></i></div>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Deliverable: Submission-Ready Manuscript</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-20 text-center">
+            <button onclick="document.getElementById('agreementModal').classList.remove('hidden')"
+                    class="bg-blue-600 text-white px-12 py-5 rounded-full font-bold text-lg hover:bg-black transition-all shadow-xl shadow-blue-900/20">
+                Enroll in the Academy ($30/mo)
+            </button>
+            <p class="text-gray-400 text-xs mt-6 uppercase tracking-widest font-bold">Limited Cohort Slots Available</p>
+        </div>
+    </section>
+
+</div>
+
+<footer class="bg-black text-white pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-4 md:grid-cols-2 gap-16 mb-20">
+            <div class="col-span-2">
+                <a href="/" class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 rounded-full border border-blue-600 flex items-center justify-center">
+                        <i class="fas fa-microscope text-blue-600"></i>
+                    </div>
+                    <span class="font-bold text-2xl tracking-tighter">RESEARCH <span class="text-blue-600">JUNCTION</span></span>
+                </a>
+                <p class="text-gray-400 text-lg leading-relaxed max-w-sm">
+                    Empowering global medical professionals to transform research from fragmented data into high-impact publications.
+                </p>
+            </div>
+            <div>
+                <h5 class="font-bold text-xs uppercase tracking-[0.2em] text-blue-500 mb-8">Ecosystem</h5>
+                <ul class="space-y-4 text-gray-400 text-sm font-medium">
+                    <li><a href="/#tracks"        class="hover:text-white transition">Access Tracks</a></li>
+                    <li><a href="/#workflow"       class="hover:text-white transition">The Workflow</a></li>
+                    <li><a href="/pulse.html"      class="hover:text-white transition">The Pulse (Insights)</a></li>
+                    <li><a href="/#accountability" class="hover:text-white transition">Accountability</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold text-xs uppercase tracking-[0.2em] text-blue-500 mb-8">Contact</h5>
+                <ul class="space-y-4 text-gray-400 text-sm">
+                    <li class="flex items-center gap-3">
+                        <i class="fas fa-envelope text-blue-600"></i>
+                        <a href="mailto:review@researchjunction.com" class="hover:text-white transition">review@researchjunction.com</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="pt-10 border-t border-gray-900 text-center text-gray-500 text-xs tracking-widest uppercase">
+            &copy; 2026 Research Junction. Collaborative Science, Global Impact.
+        </div>
+    </div>
+</footer>
+
+<!-- AGREEMENT MODAL -->
+<div id="agreementModal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-[40px] w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+            <h3 class="text-xl font-bold">Ethical Attestation &amp; Rules</h3>
+            <button onclick="document.getElementById('agreementModal').classList.add('hidden')" class="text-gray-400 hover:text-black">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="p-8 overflow-y-auto">
+            <p class="text-sm text-gray-500 mb-6">Please read and accept the Community Guidelines before moving to the payment portal.</p>
+            <div class="space-y-6">
+                <label class="flex gap-4 cursor-pointer group">
+                    <input type="checkbox" class="agreement-check w-5 h-5 mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="text-sm text-gray-600 leading-relaxed group-hover:text-black transition">
+                        <b>AI Prohibition:</b> I understand that generative AI for drafting research manuscripts is strictly prohibited. Usage leads to permanent removal from authorship lists.
+                    </span>
+                </label>
+                <label class="flex gap-4 cursor-pointer group">
+                    <input type="checkbox" class="agreement-check w-5 h-5 mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="text-sm text-gray-600 leading-relaxed group-hover:text-black transition">
+                        <b>Integrity &amp; Verification:</b> I agree to maintain a similarity index below 10% and verify every reference via PubMed.
+                    </span>
+                </label>
+                <label class="flex gap-4 cursor-pointer group">
+                    <input type="checkbox" class="agreement-check w-5 h-5 mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="text-sm text-gray-600 leading-relaxed group-hover:text-black transition">
+                        <b>The Thick Skin Rule:</b> I am prepared for repeated revisions and understand the "Map vs. Miles" philosophy.
+                    </span>
+                </label>
+                <label class="flex gap-4 cursor-pointer group">
+                    <input type="checkbox" class="agreement-check w-5 h-5 mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="text-sm text-gray-600 leading-relaxed group-hover:text-black transition">
+                        <b>No-Refund Policy:</b> I acknowledge that all subscription fees and course payments are final and non-refundable.
+                    </span>
+                </label>
+            </div>
+        </div>
+        <div class="p-8 bg-gray-50 border-t border-gray-100">
+            <button onclick="proceedToAcademyCheckout()"
+                    class="w-full bg-blue-600 text-white py-5 rounded-full font-bold hover:bg-black transition-all">
+                Agree &amp; Proceed to Checkout
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function proceedToAcademyCheckout() {
+    const checks = document.querySelectorAll('.agreement-check');
+    const allChecked = Array.from(checks).every(c => c.checked);
+    if (!allChecked) {
+        alert('Please agree to all terms before proceeding.');
+        return;
+    }
+    window.location.href = 'https://buy.stripe.com/dRm4gsbiB4q76sf5rp8N200';
+}
+</script>
+</body>
+</html>

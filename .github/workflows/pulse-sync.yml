@@ -1,0 +1,224 @@
+name: Sync Pulse Posts
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'   # every 4 hours
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate medical research posts via Gemini and save to Firebase
+        env:
+          GEMINI_API_KEY:   ${{ secrets.GEMINI_API_KEY }}
+          FIREBASE_SECRET:  ${{ secrets.FIREBASE_SECRET }}
+        run: |
+          node << 'JSEOF'
+          const https = require('https');
+
+          const FIREBASE_URL  = 'insight-3bbec-default-rtdb.firebaseio.com';
+          const FIREBASE_SEC  = process.env.FIREBASE_SECRET;
+          const GEMINI_KEY    = process.env.GEMINI_API_KEY;
+          const GEMINI_MODEL  = 'gemini-2.5-flash-preview-04-17';
+          const MAX_POSTS     = 50;
+
+          const SOURCES = [
+            { name:'NEJM',               query:'latest medical research NEJM New England Journal Medicine' },
+            { name:'The Lancet',         query:'latest research The Lancet medical journal' },
+            { name:'JAMA',               query:'latest JAMA Journal American Medical Association research' },
+            { name:'BMJ',                query:'latest BMJ British Medical Journal research' },
+            { name:'Nature Medicine',    query:'latest Nature Medicine journal research' },
+            { name:'Science Daily',      query:'latest medical research Science Daily health' },
+            { name:'Medscape',           query:'latest Medscape medical news clinical research' },
+            { name:'Stat News',          query:'latest Stat News medical research health' },
+            { name:'Medical News Today', query:'latest Medical News Today health research' },
+          ];
+
+          const SANDRA_SYSTEM = `You are writing for Research Junction, a medical research education brand founded by Sandra Bakare MD/MBA.
+Sandra's voice is authoritative but accessible, direct and confident, passionate about research methodology.
+Speak to medical students, PhD candidates, clinicians, early-career researchers.
+Always connect findings to practical research implications.
+Brand tone: Relatable, educational, occasionally punchy.`;
+
+          function httpsRequest(options, body) {
+            return new Promise((resolve, reject) => {
+              const req = https.request(options, (res) => {
+                let data = '';
+                res.on('data', c => data += c);
+                res.on('end', () => resolve({ status: res.statusCode, body: data }));
+              });
+              req.on('error', reject);
+              if (body) req.write(body);
+              req.end();
+            });
+          }
+
+          async function callGemini(prompt) {
+            const body = JSON.stringify({
+              systemInstruction: { parts: [{ text: SANDRA_SYSTEM }] },
+              contents: [{ role: 'user', parts: [{ text: prompt }] }],
+              tools: [{ googleSearch: {} }],
+              generationConfig: { maxOutputTokens: 1500, temperature: 0.7 },
+            });
+
+            const options = {
+              hostname: 'generativelanguage.googleapis.com',
+              path: `/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_KEY}`,
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+            };
+
+            const { status, body: responseBody } = await httpsRequest(options, body);
+            const data = JSON.parse(responseBody);
+
+            if (status === 429) throw new Error('RATE_LIMITED');
+            if (status !== 200) throw new Error(`Gemini ${status}: ${data.error?.message}`);
+
+            const text = data.candidates?.[0]?.content?.parts
+              ?.filter(p => p.text)?.map(p => p.text)?.join('') || '';
+            return text;
+          }
+
+          async function firebaseGet(path) {
+            const { status, body } = await httpsRequest({
+              hostname: FIREBASE_URL, path: `/${path}.json?auth=${FIREBASE_SEC}`, method: 'GET'
+            });
+            if (status !== 200) throw new Error(`Firebase GET ${status}`);
+            return JSON.parse(body);
+          }
+
+          async function firebasePut(path, data) {
+            const body = JSON.stringify(data);
+            const { status, body: resp } = await httpsRequest({
+              hostname: FIREBASE_URL,
+              path: `/${path}.json?auth=${FIREBASE_SEC}`,
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+            }, body);
+            if (status !== 200) throw new Error(`Firebase PUT ${status}: ${resp}`);
+          }
+
+          function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+          async function generatePost(source, usedUrls) {
+            const prompt = `Search for the single most impactful, recent medical research article from ${source.name}.
+
+Rules:
+- Must be genuinely new research (not older than 2 weeks)
+- Must be from ${source.name} specifically  
+- Avoid these already-covered URLs: ${usedUrls.slice(-10).join(', ') || 'none yet'}
+
+Decide: FULL POST (major findings) or QUICK DIGEST (narrower scope)?
+
+Respond with ONLY valid JSON, no markdown fences:
+
+{
+  "title": "compelling headline under 12 words",
+  "source": "${source.name}",
+  "sourceUrl": "actual URL of the article",
+  "format": "full",
+  "category": "one of: Clinical Research | AI in Medicine | Oncology | Cardiology | Infectious Disease | Mental Health | Surgery | Public Health | Neurology | Pharmacology",
+  "summary": "2 sentence plain-language summary",
+  "content": "full markdown post content",
+  "publishedAt": "${new Date().toISOString()}"
+}
+
+For FULL POST:
+# [title]
+## What The Research Found
+[findings]
+## Why This Matters For Your Research
+[implications]
+## The Research Junction Take
+[Sandra commentary]
+**Key Takeaway:** [one bold sentence]
+---
+*Originally reported by ${source.name}. Reframed for the Research Junction community.*
+
+For QUICK DIGEST (use "digest" as format value):
+# [title]
+**The headline finding:** [one sentence]
+**Key findings:**
+- [point 1]
+- [point 2]
+- [point 3]
+**Why researchers should care:** [2 sentences]
+**Sandra's take:** *[one punchy sentence]*
+---
+*Originally reported by ${source.name}. Curated for the Research Junction community.*`;
+
+            const raw = await callGemini(prompt);
+            const match = raw.match(/\{[\s\S]*\}/);
+            if (!match) throw new Error('No JSON in Gemini response');
+
+            const post = JSON.parse(match[0]);
+            post.id          = 'post_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+            post.publishedAt = post.publishedAt || new Date().toISOString();
+            return post;
+          }
+
+          (async () => {
+            console.log('Starting Pulse sync...');
+
+            // Load existing posts and used URLs
+            let existingPosts = {};
+            let usedUrls = [];
+            try {
+              const postsData = await firebaseGet('pulse/posts');
+              if (postsData) existingPosts = postsData;
+              console.log(`Loaded ${Object.keys(existingPosts).length} existing posts`);
+            } catch(e) { console.warn('Could not load existing posts:', e.message); }
+
+            try {
+              const urlData = await firebaseGet('pulse/usedUrls');
+              if (Array.isArray(urlData)) usedUrls = urlData;
+            } catch(e) {}
+
+            // Pick 3 random sources this cycle
+            const shuffled = [...SOURCES].sort(() => Math.random() - 0.5).slice(0, 3);
+            const newPosts = {};
+
+            for (let i = 0; i < shuffled.length; i++) {
+              const source = shuffled[i];
+              if (i > 0) {
+                console.log('Waiting 15s before next request...');
+                await sleep(15000);  // 15s gap = well within 5 RPM limit
+              }
+
+              console.log(`Generating post for ${source.name}...`);
+              try {
+                const post = await generatePost(source, usedUrls);
+                newPosts[post.id] = post;
+                usedUrls.push(post.sourceUrl);
+                console.log(`✓ ${source.name}: "${post.title}"`);
+              } catch(e) {
+                if (e.message === 'RATE_LIMITED') {
+                  console.warn(`Rate limited on ${source.name}, skipping`);
+                } else {
+                  console.warn(`Failed for ${source.name}:`, e.message);
+                }
+              }
+            }
+
+            if (Object.keys(newPosts).length === 0) {
+              console.log('No new posts generated this cycle');
+              return;
+            }
+
+            // Merge with existing, keep newest MAX_POSTS
+            const allPosts = { ...existingPosts, ...newPosts };
+            const sorted = Object.values(allPosts)
+              .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
+              .slice(0, MAX_POSTS);
+            const trimmed = {};
+            sorted.forEach(p => { trimmed[p.id] = p; });
+
+            await firebasePut('pulse/posts', trimmed);
+            await firebasePut('pulse/usedUrls', usedUrls.slice(-500));
+            await firebasePut('pulse/meta', { lastUpdate: Date.now() });
+
+            console.log(`✓ Saved ${Object.keys(newPosts).length} new posts. Total: ${sorted.length}`);
+          })().catch(err => { console.error('Fatal:', err.message); process.exit(1); });
+          JSEOF

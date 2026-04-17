@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Accelerator | Manuscript Review — Research Junction</title>
+    <meta name="description" content="Professional manuscript review service. Logic audit, journal strategy, and final polish for Q1/Q2 journal submission.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@700&family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+        :root { --brand-blue: #0b66c2; }
+
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f0f7ff; color: #1e293b; }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+        .h-tech-heading { font-family: 'Space Grotesk', sans-serif; }
+
+        .glass-nav {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .nav-link {
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .nav-link:hover { color: var(--brand-blue); background: rgba(11,102,194,0.05); border-radius: 9999px; }
+
+        .accelerator-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 32px;
+            box-shadow: 0 10px 30px rgba(59,130,246,0.08);
+            transition: all 0.4s ease;
+        }
+        .accelerator-card:hover { border-color: #3b82f6; transform: translateY(-5px); box-shadow: 0 20px 40px rgba(59,130,246,0.15); }
+
+        .workflow-step {
+            border-left: 3px solid #3b82f6;
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 0 24px 24px 0;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .redline-badge { background:#fee2e2;color:#ef4444;padding:4px 12px;border-radius:100px;font-size:10px;font-weight:800;text-transform:uppercase; }
+
+        .action-button { background:#2563eb;color:#fff;font-weight:800;transition:all 0.3s ease;cursor:pointer; }
+        .action-button:hover { background:#1e40af;box-shadow:0 10px 25px rgba(37,99,235,0.3); }
+
+        .pricing-hero { background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);color:white;border-radius:32px; }
+
+        .tier-card { background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:1.5rem;flex:1;min-width:140px;text-align:center; }
+        .tier-label { font-size:0.6rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.4rem; }
+        .tier-trigger { font-size:0.65rem;font-weight:700;color:#93c5fd;margin-top:0.5rem; }
+
+        .modal-bg { backdrop-filter:blur(10px);background:rgba(15,23,42,0.7); }
+
+        #submissionSection { display:none;opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s ease; }
+        #submissionSection.visible { display:block;opacity:1;transform:translateY(0); }
+
+        .upload-zone { border:2px dashed #cbd5e1;border-radius:24px;transition:all 0.3s ease;cursor:pointer;background:#f8fafc; }
+        .upload-zone:hover,.upload-zone.dragover { border-color:#2563eb;background:#eff6ff; }
+
+        .support-zone { border:2px dashed #cbd5e1;border-radius:20px;transition:all 0.3s ease;cursor:pointer;background:#f8fafc; }
+        .support-zone:hover { border-color:#10b981;background:#f0fdf4; }
+
+        .result-panel { background:#0f172a;border-radius:24px;color:white; }
+
+        .progress-bar { height:6px;background:#e2e8f0;border-radius:99px;overflow:hidden; }
+        .progress-fill { height:100%;background:linear-gradient(90deg,#2563eb,#3b82f6);border-radius:99px;transition:width 0.5s ease;width:0%; }
+
+        .spinner { border:3px solid #e2e8f0;border-top:3px solid #2563eb;border-radius:50%;width:24px;height:24px;animation:spin 0.8s linear infinite;flex-shrink:0; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        .field-input { width:100%;padding:1rem 1.25rem;border:1px solid #e2e8f0;border-radius:16px;font-size:0.9rem;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;background:white; }
+        .field-input:focus { outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
+        .field-label { font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#94a3b8;display:block;margin-bottom:0.5rem; }
+
+        .step-header { display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem; }
+        .step-number { width:36px;height:36px;background:#eff6ff;color:#2563eb;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;flex-shrink:0; }
+
+        .support-file-pill { display:flex;align-items:center;gap:0.6rem;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:12px;padding:0.5rem 0.8rem;font-size:0.8rem;color:#334155; }
+        .support-file-pill .remove-btn { color:#94a3b8;cursor:pointer;margin-left:auto;flex-shrink:0; }
+        .support-file-pill .remove-btn:hover { color:#ef4444; }
+
+        .optional-badge { font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;background:#f0fdf4;color:#10b981;border:1px solid #bbf7d0;border-radius:999px;padding:0.2rem 0.7rem; }
+
+        #submitFinalBtn:disabled { opacity:0.4;cursor:not-allowed; }
+    </style>
+</head>
+<body>
+
+<nav class="fixed w-full z-50 glass-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+            <a href="/" class="flex items-center gap-2">
+                <div class="w-10 h-10 border-2 border-blue-600 flex items-center justify-center">
+                    <i class="text-blue-600 text-xl"><img src="logo.png"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-xl leading-none text-black tracking-tighter">RESEARCH <span class="text-blue-600">JUNCTION</span></span>
+                    <span class="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Collaborative Science</span>
+                </div>
+            </a>
+            <div class="hidden md:flex space-x-2 items-center">
+                <a href="#tracks"         class="nav-link text-gray-600">Access Tracks</a>
+                <a href="#workflow"       class="nav-link text-gray-600">Workflow</a>
+                <a href="#accountability" class="nav-link text-gray-600">Accountability</a>
+                <a href="/pulse.html"     class="nav-link text-gray-600">Insights</a>
+                <a href="/manuscript.html" class="ml-4 bg-blue-600 text-white px-6 py-2 rounded-full text-xs font-bold hover:bg-black transition-all shadow-lg uppercase tracking-widest">Submit Manuscript</a>
+            </div>
+    <!-- Mobile hamburger -->
+            <button id="menuBtn" class="md:hidden text-gray-600 hover:text-blue-600 p-2" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-2">
+        <a href="/" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">Home</a>
+        <a href="/#tracks" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">Access Tracks</a>
+        <a href="/manuscript.html" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">The Accelerator</a>
+        <a href="/pulse.html" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">The Pulse</a>
+        <a href="/manuscript.html" class="block w-full text-center py-3 bg-blue-600 text-white rounded-full text-xs font-bold hover:bg-black transition uppercase tracking-widest">Submit Manuscript</a>
+    </div>
+</nav>
+
+<div class="py-20 px-6 pt-36">
+
+    <header class="max-w-4xl mx-auto text-center mb-24">
+        <div class="inline-block px-4 py-1 bg-blue-100 text-blue-700 rounded-full mb-6">
+            <span class="text-[10px] font-bold tracking-[0.3em] uppercase">Scientific Finishing School</span>
+        </div>
+        <h1 class="h-tech-heading text-5xl md:text-6xl font-extrabold mb-6 text-slate-900">Manuscript Accelerator</h1>
+        <p class="text-slate-600 text-lg leading-relaxed">
+            Standard editing focuses on grammar. We focus on Scientific Logic.<br>
+            Secure your publication in Q1 and Q2 journals with our expert review team.
+        </p>
+    </header>
+
+    <section class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 mb-24">
+        <div class="accelerator-card p-10">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white">
+                    <i class="fas fa-microscope text-xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold">The Reviewer Shield</h3>
+            </div>
+            <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                Navigate "Major Revisions" with confidence. Our team of seasoned scientists assists with drafting the Response to Reviewers letter, helping you defend your science professionally.
+            </p>
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <span class="redline-badge mb-2 inline-block">Logic Redline</span>
+                <p class="text-xs italic text-slate-500">"The correlation between Group A and B is statistically weak — recommend refining the methodology section."</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col justify-center">
+            <div class="workflow-step">
+                <h4 class="font-bold text-blue-700 text-xs uppercase tracking-widest mb-2">Step 1: Logic Audit</h4>
+                <p class="text-sm text-slate-700">Our team performs a line-by-line redline of your logic, data flow, and manuscript structure.</p>
+            </div>
+            <div class="workflow-step">
+                <h4 class="font-bold text-blue-700 text-xs uppercase tracking-widest mb-2">Step 2: Strategy Session</h4>
+                <p class="text-sm text-slate-700">Receive a comprehensive feedback report including professional Target Journal Suggestions.</p>
+            </div>
+            <div class="workflow-step">
+                <h4 class="font-bold text-blue-700 text-xs uppercase tracking-widest mb-2">Step 3: Final Polish</h4>
+                <p class="text-sm text-slate-700">Direct guidance on cover letters and detailed Response to Reviewers letters.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-5xl mx-auto mb-24 pricing-hero p-12 shadow-2xl">
+        <div class="text-center mb-10">
+            <h2 class="h-tech-heading text-3xl font-bold mb-3">Review Investment</h2>
+            <p class="text-blue-200 text-xs font-bold uppercase tracking-widest">Turnaround: 4–10 Working Days · Priced on Manuscript Draft Only</p>
+        </div>
+        <div class="flex flex-col md:flex-row gap-4 mb-8 items-center">
+            <div class="tier-card">
+                <div class="tier-label">Tier 1 — Always</div>
+                <div class="text-5xl font-black">$50</div>
+                <div class="tier-trigger">Every manuscript</div>
+            </div>
+            <div class="text-blue-300 font-black text-2xl">+</div>
+            <div class="tier-card">
+                <div class="tier-label">Tier 2 — Extended</div>
+                <div class="text-5xl font-black">$20</div>
+                <div class="tier-trigger">Activated above 2,500 words</div>
+            </div>
+            <div class="text-blue-300 font-black text-2xl">+</div>
+            <div class="tier-card">
+                <div class="tier-label">Tier 3 — Per Block</div>
+                <div class="text-5xl font-black">$2</div>
+                <div class="tier-trigger">Per 100-word block above 3,500</div>
+            </div>
+        </div>
+        <p class="text-center text-blue-200 text-xs mt-8 italic">Supporting documents (data, figures, appendices) submitted free of charge.</p>
+    </section>
+
+    <section class="max-w-4xl mx-auto text-center mb-20">
+        <button onclick="document.getElementById('termsModal').classList.remove('hidden')"
+                class="action-button px-16 py-6 rounded-2xl text-lg uppercase tracking-widest shadow-xl">
+            Submit for Review
+        </button>
+        <p class="mt-6 text-slate-400 text-xs font-bold uppercase tracking-widest">Sandra Bakare MD/MBA &amp; Science Review Board</p>
+    </section>
+
+    <!-- SUBMISSION SECTION -->
+    <section id="submissionSection" class="max-w-3xl mx-auto pb-24 space-y-8">
+
+        <div class="accelerator-card p-10">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <h2 class="h-tech-heading text-2xl font-bold">Your Details</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="field-label">Full Name</label>
+                    <input type="text" id="authorName" class="field-input" placeholder="Dr. Jane Smith" oninput="validateSubmit()">
+                </div>
+                <div>
+                    <label class="field-label">Academic Email</label>
+                    <input type="email" id="authorEmail" class="field-input" placeholder="jane@university.edu" oninput="validateSubmit()">
+                </div>
+            </div>
+            <div class="mb-4">
+                <label class="field-label">Manuscript Title</label>
+                <input type="text" id="manuscriptTitle" class="field-input" placeholder="Enter your manuscript title" oninput="validateSubmit()">
+            </div>
+            <div>
+                <label class="field-label">Target Journal (optional)</label>
+                <input type="text" id="targetJournal" class="field-input" placeholder="e.g. NEJM, The Lancet">
+            </div>
+        </div>
+
+        <div class="accelerator-card p-10">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <div>
+                    <h2 class="h-tech-heading text-2xl font-bold">Manuscript Draft</h2>
+                    <p class="text-slate-400 text-sm mt-1">Word-counted to calculate your fee. <strong>.docx or .pdf only.</strong></p>
+                </div>
+            </div>
+
+            <div class="upload-zone p-12 text-center mb-5" id="uploadZone"
+                 onclick="document.getElementById('fileInput').click()">
+                <input type="file" id="fileInput" class="hidden" accept=".docx,.pdf">
+                <i class="fas fa-file-alt text-4xl text-blue-300 mb-4"></i>
+                <p class="font-bold text-slate-600 mb-1">Click to upload your manuscript draft</p>
+                <p class="text-sm text-slate-400">.docx or .pdf · determines your review fee</p>
+            </div>
+
+            <div id="fileInfo" class="hidden bg-slate-50 rounded-2xl p-4 flex items-center gap-4 mb-4">
+                <i class="fas fa-file-alt text-2xl text-blue-500"></i>
+                <div class="flex-1">
+                    <div id="fileName" class="font-bold text-sm"></div>
+                    <div id="fileSize" class="text-xs text-slate-400"></div>
+                </div>
+                <button onclick="clearManuscript()" class="text-slate-400 hover:text-red-500 transition">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div id="processingRow" class="hidden items-center gap-3 text-sm text-slate-500 mb-4">
+                <div class="spinner"></div>
+                <span id="processingText">Reading manuscript...</span>
+            </div>
+            <div class="progress-bar hidden mb-2" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="result-panel p-8 hidden" id="resultPanel">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                    <i class="fas fa-calculator text-white text-sm"></i>
+                </div>
+                <h2 class="h-tech-heading text-xl font-bold">Word Count &amp; Fee Breakdown</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-white/5 rounded-2xl p-6">
+                    <div class="text-xs uppercase tracking-widest text-slate-400 mb-2">Manuscript Word Count</div>
+                    <div id="wordCountDisplay" class="text-5xl font-bold text-blue-400"></div>
+                    <div id="wordCountLabel" class="text-xs text-slate-400 mt-2"></div>
+                </div>
+                <div class="bg-white/5 rounded-2xl p-6">
+                    <div class="text-xs uppercase tracking-widest text-slate-400 mb-2">Your Review Fee</div>
+                    <div id="priceDisplay" class="text-5xl font-bold text-white"></div>
+                    <div class="text-xs text-slate-400 mt-2">Supporting docs included free</div>
+                </div>
+            </div>
+            <div id="feeBreakdown" class="bg-white/5 rounded-2xl p-6 space-y-3 text-sm"></div>
+        </div>
+
+        <div class="accelerator-card p-10">
+            <div class="step-header">
+                <div class="step-number">3</div>
+                <div class="flex items-center gap-3 flex-wrap">
+                    <h2 class="h-tech-heading text-2xl font-bold">Supporting Documents</h2>
+                    <span class="optional-badge">Optional · Free</span>
+                </div>
+            </div>
+            <p class="text-slate-500 text-sm mb-6">
+                Upload data files, figures, tables, appendices — anything that helps our reviewers understand your work fully.
+                <strong>Up to 5 files, no extra charge.</strong><br>
+                <span class="text-slate-400 text-xs">Accepted: PDF, JPEG, JPG, PNG, GIF, WEBP</span>
+            </p>
+            <div class="support-zone p-8 text-center mb-5" id="supportZone"
+                 onclick="document.getElementById('supportInput').click()">
+                <input type="file" id="supportInput" class="hidden" accept=".pdf,.jpeg,.jpg,.png,.gif,.webp" multiple>
+                <i class="fas fa-paperclip text-3xl text-green-400 mb-3"></i>
+                <p class="font-bold text-slate-600 mb-1">Click to attach supporting documents</p>
+                <p class="text-xs text-slate-400">PDF, JPEG, PNG, GIF, WEBP · Up to 5 files</p>
+            </div>
+            <div id="supportFileList" class="space-y-2 hidden"></div>
+            <p id="supportCount" class="text-xs text-slate-400 mt-3 hidden"></p>
+        </div>
+
+        <div id="successBanner" class="hidden bg-green-50 border border-green-200 rounded-2xl p-6">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+                <div>
+                    <div class="font-bold text-green-800">Manuscript saved! Redirecting to payment...</div>
+                    <div class="text-sm text-green-600 mt-1">You will be charged exactly $" + calculatedPrice + " based on your word count.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="errorBanner" class="hidden bg-red-50 border border-red-200 rounded-2xl p-6">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-exclamation-circle text-red-500 text-2xl"></i>
+                <div>
+                    <div class="font-bold text-red-800">Submission failed</div>
+                    <div id="errorMsg" class="text-sm text-red-600 mt-1">Please email your files to <a href="mailto:review@researchjunction.com" class="underline">review@researchjunction.com</a></div>
+                </div>
+            </div>
+        </div>
+
+        <button id="submitFinalBtn" onclick="submitManuscript()" disabled
+                class="action-button w-full py-6 rounded-2xl text-lg uppercase tracking-widest shadow-xl">
+            <i class="fas fa-paper-plane mr-3"></i> Submit &amp; Proceed to Payment
+        </button>
+        <p class="text-center text-xs text-slate-400 uppercase tracking-widest font-bold">
+            Sandra Bakare MD/MBA &amp; Science Review Board
+        </p>
+
+    </section>
+</div>
+
+<footer class="bg-black text-white pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-4 md:grid-cols-2 gap-16 mb-20">
+            <div class="col-span-2">
+                <a href="/" class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 rounded-full border border-blue-600 flex items-center justify-center">
+                        <i class="fas fa-microscope text-blue-600"></i>
+                    </div>
+                    <span class="font-bold text-2xl tracking-tighter">RESEARCH <span class="text-blue-600">JUNCTION</span></span>
+                </a>
+                <p class="text-gray-400 text-lg leading-relaxed max-w-sm">
+                    Empowering global medical professionals to transform research from fragmented data into high-impact publications.
+                </p>
+            </div>
+            <div>
+                <h5 class="font-bold text-xs uppercase tracking-[0.2em] text-blue-500 mb-8">Ecosystem</h5>
+                <ul class="space-y-4 text-gray-400 text-sm font-medium">
+                    <li><a href="/#tracks"        class="hover:text-white transition">Access Tracks</a></li>
+                    <li><a href="/#workflow"       class="hover:text-white transition">The Workflow</a></li>
+                    <li><a href="/pulse.html"      class="hover:text-white transition">The Pulse (Insights)</a></li>
+                    <li><a href="/#accountability" class="hover:text-white transition">Accountability</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold text-xs uppercase tracking-[0.2em] text-blue-500 mb-8">Contact</h5>
+                <ul class="space-y-4 text-gray-400 text-sm">
+                    <li class="flex items-center gap-3">
+                        <i class="fas fa-envelope text-blue-600"></i>
+                        <a href="mailto:review@researchjunction.com" class="hover:text-white transition">review@researchjunction.com</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="pt-10 border-t border-gray-900 text-center text-gray-500 text-xs tracking-widest uppercase">
+            &copy; 2026 Research Junction. Collaborative Science, Global Impact.
+        </div>
+    </div>
+</footer>
+
+<!-- TERMS MODAL -->
+<div id="termsModal" class="fixed inset-0 z-[100] modal-bg flex items-center justify-center hidden p-6">
+    <div class="bg-white w-full max-w-2xl rounded-[40px] overflow-hidden shadow-2xl">
+        <div class="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+            <h3 class="h-tech-heading text-xl font-bold text-slate-900">Terms of Service</h3>
+            <button onclick="document.getElementById('termsModal').classList.add('hidden')" class="text-slate-400 hover:text-slate-900">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-10 space-y-5 max-h-[45vh] overflow-y-auto">
+            <div>
+                <h4 class="text-blue-600 font-bold text-xs uppercase tracking-widest mb-2">1. Turnaround &amp; Delivery</h4>
+                <p class="text-slate-600 text-sm">Reviews completed within 4–10 working days from payment verification and receipt of full manuscript.</p>
+            </div>
+            <div>
+                <h4 class="text-blue-600 font-bold text-xs uppercase tracking-widest mb-2">2. Scope of Service</h4>
+                <p class="text-slate-600 text-sm">Includes scientific logic audit, journal suggestions, and structural editing. We do not write manuscripts or guarantee journal acceptance.</p>
+            </div>
+            <div>
+                <h4 class="text-blue-600 font-bold text-xs uppercase tracking-widest mb-2">3. Ethical Compliance</h4>
+                <p class="text-slate-600 text-sm">We strictly adhere to ICMJE and COPE standards. Authors retain full responsibility for data integrity.</p>
+            </div>
+            <div>
+                <h4 class="text-blue-600 font-bold text-xs uppercase tracking-widest mb-2">4. Confidentiality</h4>
+                <p class="text-slate-600 text-sm">All submissions are strictly confidential. Reviewers are bound by non-disclosure agreements.</p>
+            </div>
+            <div>
+                <h4 class="text-blue-600 font-bold text-xs uppercase tracking-widest mb-2">5. Pricing</h4>
+                <p class="text-slate-600 text-sm">Fee is calculated on the manuscript draft word count only. Supporting documents are submitted free of charge.</p>
+            </div>
+        </div>
+        <div class="p-8 bg-slate-50 border-t border-slate-100 space-y-4">
+            <label class="flex gap-4 cursor-pointer group">
+                <input type="checkbox" id="termsCheck" class="w-6 h-6 rounded border-slate-300 text-blue-600 mt-1 flex-shrink-0">
+                <span class="text-sm text-slate-600 group-hover:text-slate-900 transition leading-relaxed">
+                    I agree to the Terms of Service and acknowledge the 4–10 day turnaround timeframe.
+                </span>
+            </label>
+            <button onclick="agreeAndReveal()" class="action-button w-full py-5 rounded-2xl uppercase tracking-widest text-sm">
+                Agree &amp; Proceed to Submission
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5JZmdawKJxwAk5gwsqYu1LrVAQcd_q8r_6g9wHQgxY2dLYYJjTTXc_BVEBOa_nxYJ/exec'; // TODO: move to Netlify env var
+
+    // Handle Stripe redirect back to page
+    (function() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('payment') === 'success') {
+            const banner = document.createElement('div');
+            banner.className = 'fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-green-600 text-white px-8 py-4 rounded-2xl shadow-2xl font-bold text-center';
+            banner.innerHTML = "✓ Payment successful! We'll begin your review within 24 hours.";
+            document.body.appendChild(banner);
+            setTimeout(() => banner.remove(), 6000);
+            // Clean URL
+            window.history.replaceState({}, '', '/manuscript.html');
+        } else if (params.get('payment') === 'cancelled') {
+            const banner = document.createElement('div');
+            banner.className = 'fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-amber-500 text-white px-8 py-4 rounded-2xl shadow-2xl font-bold text-center';
+            banner.innerHTML = 'Payment cancelled — your manuscript was saved. You can pay later.';
+            document.body.appendChild(banner);
+            setTimeout(() => banner.remove(), 6000);
+            window.history.replaceState({}, '', '/manuscript.html');
+        }
+    })();
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    let wordCount       = 0;
+    let calculatedPrice = 0;
+    let uploadedFile    = null;
+    let fileReady       = false;
+    let supportFiles    = [];
+
+    function agreeAndReveal() {
+        if (!document.getElementById('termsCheck').checked) {
+            alert('Please agree to the Terms of Service to proceed.');
+            return;
+        }
+        document.getElementById('termsModal').classList.add('hidden');
+        const section = document.getElementById('submissionSection');
+        section.style.display = 'block';
+        setTimeout(() => section.classList.add('visible'), 10);
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    const zone = document.getElementById('uploadZone');
+    zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', e => {
+        e.preventDefault(); zone.classList.remove('dragover');
+        if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+    document.getElementById('fileInput').addEventListener('change', e => {
+        if (e.target.files[0]) handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+        const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+        if (!['.docx','.pdf'].includes(ext)) { alert('Please upload a .docx or .pdf file only.'); return; }
+        if (file.size > 20 * 1024 * 1024) { alert('File too large. Maximum size is 20MB.'); return; }
+        uploadedFile = file; fileReady = false;
+        document.getElementById('fileName').textContent = file.name;
+        document.getElementById('fileSize').textContent = (file.size/1024).toFixed(1) + ' KB';
+        document.getElementById('fileInfo').classList.remove('hidden');
+        document.getElementById('uploadZone').classList.add('hidden');
+        document.getElementById('resultPanel').classList.add('hidden');
+        ext === '.docx' ? readDocx(file) : readPdf(file);
+    }
+
+    function showProcessing(text) {
+        const row = document.getElementById('processingRow');
+        row.classList.remove('hidden'); row.style.display = 'flex';
+        document.getElementById('processingText').textContent = text;
+        document.getElementById('progressBar').classList.remove('hidden');
+    }
+    function setProgress(pct) { document.getElementById('progressFill').style.width = pct + '%'; }
+
+    function readDocx(file) {
+        showProcessing('Reading Word document...'); setProgress(30);
+        const reader = new FileReader();
+        reader.onload = async e => {
+            setProgress(70);
+            try { const r = await mammoth.extractRawText({ arrayBuffer: e.target.result }); setProgress(100); countAndShow(r.value); }
+            catch { document.getElementById('processingText').textContent = 'Error reading file.'; }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    async function readPdf(file) {
+        showProcessing('Reading PDF...'); setProgress(20);
+        const reader = new FileReader();
+        reader.onload = async e => {
+            try {
+                const pdf = await pdfjsLib.getDocument({ data: e.target.result }).promise;
+                let text = '';
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const pg = await pdf.getPage(i);
+                    const ct = await pg.getTextContent();
+                    text += ct.items.map(s => s.str).join(' ') + ' ';
+                    setProgress(20 + Math.round((i / pdf.numPages) * 75));
+                }
+                setProgress(100); countAndShow(text);
+            } catch { document.getElementById('processingText').textContent = 'Error reading PDF.'; }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function countAndShow(text) {
+        const words     = text.trim().split(/\s+/).filter(w => w.length > 0);
+        wordCount       = words.length;
+        calculatedPrice = calculatePrice(wordCount);
+        fileReady       = true;
+
+        document.getElementById('processingRow').style.display = 'none';
+        document.getElementById('progressBar').classList.add('hidden');
+        document.getElementById('resultPanel').classList.remove('hidden');
+        document.getElementById('wordCountDisplay').textContent = wordCount.toLocaleString();
+        document.getElementById('priceDisplay').textContent     = '$' + calculatedPrice;
+        document.getElementById('wordCountLabel').textContent   =
+            wordCount <= 2500 ? 'Tier 1 only' :
+            wordCount <= 3500 ? 'Tier 1 + Tier 2' : 'Tier 1 + Tier 2 + Tier 3';
+
+        renderBreakdown(wordCount, calculatedPrice);
+        validateSubmit();
+    }
+
+    function calculatePrice(words) {
+        let price = 50;
+        if (words > 2500) price += 20;
+        if (words > 3500) price += Math.ceil((words - 3500) / 100) * 2;
+        return price;
+    }
+
+    function renderBreakdown(words, price) {
+        let rows = `
+            <div class="flex justify-between text-slate-300 pb-2 border-b border-white/10">
+                <span>Tier 1 — Base fee (all manuscripts)</span>
+                <span class="font-bold text-white">$50</span>
+            </div>`;
+        if (words > 2500) {
+            rows += `<div class="flex justify-between text-slate-300 pb-2 border-b border-white/10">
+                <span>Tier 2 — Extended fee (above 2,500 words)</span>
+                <span class="font-bold text-white">+$20</span>
+            </div>`;
+        }
+        if (words > 3500) {
+            const extra  = words - 3500;
+            const blocks = Math.ceil(extra / 100);
+            rows += `<div class="flex justify-between text-slate-300 pb-2 border-b border-white/10">
+                <span>Tier 3 — ${extra.toLocaleString()} words → ${blocks} × 100-word block${blocks > 1 ? 's' : ''}</span>
+                <span class="font-bold text-white">+$${blocks * 2}</span>
+            </div>`;
+        }
+        rows += `<div class="flex justify-between font-bold text-blue-400 pt-2 text-base">
+            <span>Total Review Fee</span>
+            <span>$${price}</span>
+        </div>`;
+        document.getElementById('feeBreakdown').innerHTML = rows;
+    }
+
+    function clearManuscript() {
+        uploadedFile = null; fileReady = false; wordCount = 0; calculatedPrice = 0;
+        document.getElementById('fileInput').value = '';
+        document.getElementById('fileInfo').classList.add('hidden');
+        document.getElementById('uploadZone').classList.remove('hidden');
+        document.getElementById('resultPanel').classList.add('hidden');
+        document.getElementById('progressFill').style.width = '0%';
+        validateSubmit();
+    }
+
+    document.getElementById('supportInput').addEventListener('change', function() {
+        handleSupportFiles(this.files);
+    });
+
+    function handleSupportFiles(newFiles) {
+        const allowed = ['.pdf','.jpeg','.jpg','.png','.gif','.webp'];
+        for (let f of newFiles) {
+            if (supportFiles.length >= 5) { alert('Maximum 5 supporting files allowed.'); break; }
+            const ext = f.name.slice(f.name.lastIndexOf('.')).toLowerCase();
+            if (!allowed.includes(ext)) { alert(f.name + ' — unsupported type.'); continue; }
+            supportFiles.push(f);
+        }
+        document.getElementById('supportInput').value = '';
+        renderSupportList();
+    }
+
+    function removeSupportFile(idx) { supportFiles.splice(idx, 1); renderSupportList(); }
+
+    function renderSupportList() {
+        const list  = document.getElementById('supportFileList');
+        const count = document.getElementById('supportCount');
+        if (!supportFiles.length) { list.classList.add('hidden'); count.classList.add('hidden'); return; }
+        list.classList.remove('hidden'); count.classList.remove('hidden');
+        count.textContent = supportFiles.length + ' of 5 supporting file' + (supportFiles.length > 1 ? 's' : '') + ' added';
+        list.innerHTML = supportFiles.map((f, i) => `
+            <div class="support-file-pill">
+                <i class="fas fa-paperclip text-green-500 text-xs"></i>
+                <span class="truncate flex-1">${escHtml(f.name)}</span>
+                <span class="text-slate-400 text-xs flex-shrink-0">${(f.size/1024).toFixed(1)} KB</span>
+                <button class="remove-btn" onclick="removeSupportFile(${i})"><i class="fas fa-times text-xs"></i></button>
+            </div>`).join('');
+    }
+
+    function validateSubmit() {
+        const ok = document.getElementById('authorName').value.trim()      !== '' &&
+                   document.getElementById('authorEmail').value.trim()     !== '' &&
+                   document.getElementById('manuscriptTitle').value.trim() !== '' &&
+                   fileReady;
+        const btn = document.getElementById('submitFinalBtn');
+        btn.disabled      = !ok;
+        btn.style.opacity = ok ? '1' : '0.4';
+        btn.style.cursor  = ok ? 'pointer' : 'not-allowed';
+    }
+
+    async function submitManuscript() {
+        const name    = document.getElementById('authorName').value.trim();
+        const email   = document.getElementById('authorEmail').value.trim();
+        const title   = document.getElementById('manuscriptTitle').value.trim();
+        const journal = document.getElementById('targetJournal').value.trim();
+
+        const btn = document.getElementById('submitFinalBtn');
+        btn.disabled = true;
+
+        try {
+            // Step 1: Upload manuscript files to Google Drive
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> Saving manuscript...';
+            const manuscriptBase64 = await toBase64(uploadedFile);
+            const supportEncoded   = [];
+            for (let f of supportFiles) {
+                supportEncoded.push({ fileName: f.name, fileData: await toBase64(f) });
+            }
+            const payload = {
+                fileName: uploadedFile.name, fileData: manuscriptBase64,
+                authorName: name, authorEmail: email,
+                manuscriptTitle: title, targetJournal: journal || 'Not specified',
+                wordCount, reviewFee: calculatedPrice, supportingFiles: supportEncoded
+            };
+            // Fire and forget — Google Apps Script saves to Drive
+            fetch(APPS_SCRIPT_URL, { method:'POST', mode:'no-cors', body: JSON.stringify(payload) });
+
+            // Step 2: Create dynamic Stripe Checkout session
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> Preparing payment...';
+            const checkoutRes = await fetch('/.netlify/functions/create-checkout', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    wordCount,
+                    reviewFee:       calculatedPrice,
+                    authorEmail:     email,
+                    manuscriptTitle: title,
+                }),
+            });
+
+            const checkoutData = await checkoutRes.json();
+            if (!checkoutRes.ok || checkoutData.error) {
+                throw new Error(checkoutData.error || 'Could not create payment session');
+            }
+
+            // Step 3: Redirect to Stripe Checkout
+            document.getElementById('successBanner').classList.remove('hidden');
+            btn.style.display = 'none';
+            // Validate URL is a real Stripe checkout URL before redirecting
+            if (!checkoutData.url?.startsWith('https://checkout.stripe.com/')) {
+                throw new Error('Invalid checkout URL received');
+            }
+            setTimeout(() => { window.location.href = checkoutData.url; }, 1500);
+
+        } catch(err) {
+            document.getElementById('errorBanner').classList.remove('hidden');
+            document.getElementById('errorMsg').textContent = 'Error: ' + err.message;
+            btn.innerHTML = '<i class="fas fa-paper-plane mr-3"></i> Submit &amp; Proceed to Payment';
+            btn.disabled  = false;
+            btn.style.opacity = '1';
+        }
+    }
+
+    function escHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function toBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader   = new FileReader();
+            reader.onload  = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+</script>
+</body>
+</html>

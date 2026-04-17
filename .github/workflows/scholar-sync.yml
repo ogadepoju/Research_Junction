@@ -1,0 +1,123 @@
+name: Sync Scholar Stats
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fetch Scholar stats via OpenAlex and push to Firebase
+        env:
+          FIREBASE_SECRET: ${{ secrets.FIREBASE_SECRET }}
+        run: |
+          node << 'JSEOF'
+          const https = require('https');
+
+          const FIREBASE_URL  = 'insight-3bbec-default-rtdb.firebaseio.com';
+          const FIREBASE_SEC  = process.env.FIREBASE_SECRET;
+
+          // The correct OpenAlex author ID for Sandra Bakare
+          // Found by searching: https://api.openalex.org/authors?search=Sandra+Bakare
+          // Set this to the OpenAlex ID once confirmed (format: A1234567890)
+          // If blank, the script searches by name and prints the ID so you can hardcode it
+          const OPENALEX_AUTHOR_ID = 'A5116406241';
+          const AUTHOR_NAME        = 'Sandra Bakare';
+          const SCHOLAR_ID         = 'XT483uIAAAAJ';
+
+          function get(url) {
+            return new Promise((resolve, reject) => {
+              https.get(url, {
+                headers: {
+                  'User-Agent': 'ResearchJunction/1.0 (mailto:review@researchjunction.com)',
+                  'Accept':     'application/json',
+                }
+              }, (res) => {
+                let body = '';
+                res.on('data', c => body += c);
+                res.on('end', () => {
+                  try { resolve({ status: res.statusCode, data: JSON.parse(body) }); }
+                  catch(e) { reject(new Error(`JSON parse failed: ${body.slice(0, 300)}`)); }
+                });
+              }).on('error', reject);
+            });
+          }
+
+          function writeToFirebase(data) {
+            return new Promise((resolve, reject) => {
+              const payload = JSON.stringify(data);
+              const options = {
+                hostname: FIREBASE_URL,
+                path:     `/scholar_cache.json?auth=${FIREBASE_SEC}`,
+                method:   'PUT',
+                headers:  { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) },
+              };
+              const req = https.request(options, (res) => {
+                let body = '';
+                res.on('data', c => body += c);
+                res.on('end', () => {
+                  if (res.statusCode === 200) resolve(body);
+                  else reject(new Error(`Firebase ${res.statusCode}: ${body}`));
+                });
+              });
+              req.on('error', reject);
+              req.write(payload);
+              req.end();
+            });
+          }
+
+          (async () => {
+            let author;
+
+            if (OPENALEX_AUTHOR_ID) {
+              // Direct lookup by OpenAlex ID — fastest, most reliable
+              console.log('Looking up OpenAlex ID:', OPENALEX_AUTHOR_ID);
+              const url = `https://api.openalex.org/authors/${OPENALEX_AUTHOR_ID}`;
+              const { status, data } = await get(url);
+              if (status !== 200) throw new Error(`OpenAlex returned ${status}: ${JSON.stringify(data)}`);
+              author = data;
+
+            } else {
+              // Search by name — finds the author then prints their ID so you can hardcode it
+              console.log('Searching OpenAlex for:', AUTHOR_NAME);
+              const url = `https://api.openalex.org/authors?search=${encodeURIComponent(AUTHOR_NAME)}&per_page=10`;
+              const { status, data } = await get(url);
+              if (status !== 200) throw new Error(`OpenAlex search returned ${status}: ${JSON.stringify(data)}`);
+
+              const results = data.results || [];
+              if (results.length === 0) throw new Error(`No authors found for "${AUTHOR_NAME}" in OpenAlex`);
+
+              // Try to match by Google Scholar ID in the ids object
+              author = results.find(a => {
+                const gsi = a.ids?.google_scholar || a.ids?.openalex || '';
+                return gsi.includes(SCHOLAR_ID);
+              }) || results[0]; // fall back to first result
+
+              console.log('--- OpenAlex search results ---');
+              results.forEach((a, i) => {
+                console.log(`[${i}] ${a.display_name} | citations: ${a.cited_by_count} | id: ${a.id}`);
+                console.log(`     ids:`, JSON.stringify(a.ids));
+              });
+              console.log('--- Using author ---');
+              console.log(author.display_name, '|', author.id);
+              console.log('');
+              console.log('ACTION: Once confirmed, set OPENALEX_AUTHOR_ID =', author.id.split('/').pop(), 'in the workflow to skip search next time.');
+            }
+
+            const citations  = author.cited_by_count   ?? 0;
+            const hIndex     = author.summary_stats?.h_index   ?? null;
+            const i10Index   = author.summary_stats?.i10_index ?? null;
+            const paperCount = author.works_count ?? null;
+
+            console.log('Stats:', { citations, hIndex, i10Index, paperCount });
+
+            await writeToFirebase({
+              citations, hIndex, i10Index, paperCount,
+              source: 'openalex', fetchedAt: new Date().toISOString(),
+            });
+            console.log('✓ Written to Firebase');
+          })().catch(err => { console.error('Error:', err.message); process.exit(1); });
+          JSEOF

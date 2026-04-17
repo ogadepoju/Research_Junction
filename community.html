@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Community | Research Junction</title>
+    <meta name="description" content="A prestigious multidisciplinary research network with a proven track record of publishing in Q1 and Q2 journals. $10/mo.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@700&family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap');
+        
+        :root { --brand-blue:#0b66c2; }
+        body { font-family:'Plus Jakarta Sans',sans-serif; background-color:#fafbfc; color:#0f172a; letter-spacing:-0.01em; }
+        h1,h2,h3 { font-family:'Montserrat',sans-serif; }
+        .h-tech-heading { font-family:'Space Grotesk',sans-serif; }
+
+        .glass-nav { background:rgba(255,255,255,0.85);backdrop-filter:blur(15px);border-bottom:1px solid rgba(0,0,0,0.05); }
+        .nav-link { padding:0.5rem 1rem;transition:all 0.3s ease;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;font-weight:600; }
+        .nav-link:hover { color:var(--brand-blue);background:rgba(11,102,194,0.05);border-radius:9999px; }
+
+        .premium-card { background:#ffffff;border:1px solid rgba(226,232,240,0.5);border-radius:32px;box-shadow:0 10px 40px -10px rgba(15,23,42,0.05);transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+        .premium-card:hover { transform:translateY(-8px);box-shadow:0 20px 60px -15px rgba(15,23,42,0.1);border-color:#3b82f6; }
+
+        .profile-container { background:#ffffff;border:1px solid #e2e8f0;border-radius:40px;padding:40px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.03); }
+
+        .headshot-placeholder { width:100%;aspect-ratio:1/1;background:#f1f5f9;border-radius:30px;border:2px dashed #cbd5e1;display:flex;align-items:center;justify-content:center;overflow:hidden; }
+
+        .pulse-dot { width:8px;height:8px;background:#10b981;border-radius:50%;display:inline-block;box-shadow:0 0 10px rgba(16,185,129,0.4);animation:pdot 2s infinite; }
+        @keyframes pdot { 0%{transform:scale(0.95);box-shadow:0 0 0 0 rgba(16,185,129,0.4)} 70%{transform:scale(1);box-shadow:0 0 0 10px rgba(16,185,129,0)} 100%{transform:scale(0.95);box-shadow:0 0 0 0 rgba(16,185,129,0)} }
+
+        .scholar-skeleton {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: sk-shimmer 1.4s infinite;
+        }
+        @keyframes sk-shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+        .stat-count {
+            display: inline-block;
+            animation: stat-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes stat-pop {
+            0%   { opacity:0; transform:scale(0.7); }
+            100% { opacity:1; transform:scale(1); }
+        }
+
+        .scholar-live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #10b981;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 999px;
+            padding: 2px 8px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .scholar-live-dot {
+            width: 5px; height: 5px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pdot 2s infinite;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="fixed w-full z-50 glass-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+            <a href="/" class="flex items-center gap-2">
+                <div class="w-10 h-10 border-2 border-blue-600 flex items-center justify-center">
+                    <i class="text-blue-600 text-xl"><img src="logo.png"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-xl leading-none text-black tracking-tighter">RESEARCH <span class="text-blue-600">JUNCTION</span></span>
+                    <span class="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Collaborative Science</span>
+                </div>
+            </a>
+            <div class="hidden md:flex space-x-2 items-center">
+                <a href="#tracks"         class="nav-link text-gray-600">Access Tracks</a>
+                <a href="#workflow"       class="nav-link text-gray-600">Workflow</a>
+                <a href="#accountability" class="nav-link text-gray-600">Accountability</a>
+                <a href="/pulse.html"     class="nav-link text-gray-600">Insights</a>
+                <a href="/manuscript.html" class="ml-4 bg-blue-600 text-white px-6 py-2 rounded-full text-xs font-bold hover:bg-black transition-all shadow-lg uppercase tracking-widest">Submit Manuscript</a>
+            </div>
+    <!-- Mobile hamburger -->
+            <button id="menuBtn" class="md:hidden text-gray-600 hover:text-blue-600 p-2" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-2">
+        <a href="/" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">Home</a>
+        <a href="/#tracks" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">Access Tracks</a>
+        <a href="/manuscript.html" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">The Accelerator</a>
+        <a href="/pulse.html" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">The Pulse</a>
+        <a href="/manuscript.html" class="block w-full text-center py-3 bg-blue-600 text-white rounded-full text-xs font-bold hover:bg-black transition uppercase tracking-widest">Submit Manuscript</a>
+    </div>
+</nav>
+
+<div class="py-24 px-6 pt-36">
+
+    <header class="max-w-4xl mx-auto text-center mb-32">
+        <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-full mb-8">
+            <span class="pulse-dot"></span>
+            <span class="text-[10px] font-bold tracking-widest uppercase">Live Collaborative Network</span>
+        </div>
+        <h1 class="h-tech-heading text-5xl md:text-7xl font-bold mb-8 leading-[1.1]">The Community.</h1>
+        <div class="bg-slate-900 text-white p-8 rounded-[40px] mb-12 shadow-2xl shadow-blue-900/10">
+            <h2 class="text-xl md:text-2xl font-extrabold uppercase tracking-tight italic">
+                Proven Track Record of Publishing in <span class="text-blue-400">Q1 and Q2 Journals.</span>
+            </h2>
+        </div>
+        <p class="text-slate-500 text-lg leading-relaxed max-w-2xl mx-auto mb-10">
+            A prestigious multidisciplinary exchange for Medical, Nursing, Pharmacy, and Psychological researchers looking to engage with world-class academic output.
+        </p>
+        <button onclick="document.getElementById('gateModal').classList.remove('hidden')"
+                class="bg-blue-600 text-white px-12 py-5 rounded-2xl font-bold hover:bg-black transition-all shadow-xl shadow-blue-200 uppercase tracking-widest text-xs">
+            Join Community ($10/mo)
+        </button>
+    </header>
+
+    <section class="max-w-6xl mx-auto mb-40">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="premium-card p-10">
+                <i class="fas fa-heartbeat text-3xl text-blue-600 mb-6"></i>
+                <h3 class="font-bold text-xl mb-2">Cardiology</h3>
+                <p class="text-sm text-slate-400 mb-6">Meta-analyses &amp; Interventional Cardiology.</p>
+                <span class="text-[10px] font-extrabold text-blue-600 uppercase tracking-widest">Merit-Based</span>
+            </div>
+            <div class="premium-card p-10">
+                <i class="fas fa-vials text-3xl text-blue-600 mb-6"></i>
+                <h3 class="font-bold text-xl mb-2">Nephrology</h3>
+                <p class="text-sm text-slate-400 mb-6">Longitudinal Data &amp; Renal Patient Outcomes.</p>
+                <span class="text-[10px] font-extrabold text-blue-600 uppercase tracking-widest">Merit-Based</span>
+            </div>
+            <div class="premium-card p-10">
+                <i class="fas fa-globe-africa text-3xl text-blue-600 mb-6"></i>
+                <h3 class="font-bold text-xl mb-2">Public Health</h3>
+                <p class="text-sm text-slate-400 mb-6">Infectious Diseases &amp; Global Policy.</p>
+                <span class="text-[10px] font-extrabold text-blue-600 uppercase tracking-widest">Merit-Based</span>
+            </div>
+            <div class="premium-card p-10">
+                <i class="fas fa-syringe text-3xl text-blue-600 mb-6"></i>
+                <h3 class="font-bold text-xl mb-2">Surgery</h3>
+                <p class="text-sm text-slate-400 mb-6">Meta-Syntheses of Surgical Efficacy.</p>
+                <span class="text-[10px] font-extrabold text-blue-600 uppercase tracking-widest">Merit-Based</span>
+            </div>
+            <div class="premium-card p-10">
+                <i class="fas fa-brain text-3xl text-blue-600 mb-6"></i>
+                <h3 class="font-bold text-xl mb-2">Psychiatry</h3>
+                <p class="text-sm text-slate-400 mb-6">Behavioral Health Trends &amp; Clinical Outcomes.</p>
+                <span class="text-[10px] font-extrabold text-blue-600 uppercase tracking-widest">Merit-Based</span>
+            </div>
+            <div class="premium-card p-10">
+                <i class="fas fa-microscope text-3xl text-blue-600 mb-6"></i>
+                <h3 class="font-bold text-xl mb-2">Internal Medicine</h3>
+                <p class="text-sm text-slate-400 mb-6">Broad Clinical Evidence &amp; Efficacy Reviews.</p>
+                <span class="text-[10px] font-extrabold text-blue-600 uppercase tracking-widest">Merit-Based</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto pb-40 border-t border-slate-100 pt-32">
+        <div class="text-center mb-16">
+            <span class="text-blue-600 font-bold tracking-widest text-xs uppercase mb-4 block">Mastery &amp; Scientific Oversight</span>
+            <h2 class="h-tech-heading text-4xl font-bold">
+                Lead Investigator Credentials
+                <span class="scholar-live-badge" id="scholarLiveBadge" style="display:none">
+                    <span class="scholar-live-dot"></span> Live
+                </span>
+            </h2>
+        </div>
+        <div class="profile-container flex flex-col lg:flex-row gap-16 items-center">
+            <div class="lg:w-1/3">
+                <div class="headshot-placeholder">
+                    <i class="text-slate-200 text-8xl"><img src="headshot.jpg" style="width: 100%; height: auto;" alt="headshot"></i>
+                </div>
+            </div>
+            <div class="lg:w-2/3">
+                <h3 class="h-tech-heading text-4xl font-bold mb-2">Sandra Bakare MD/MBA</h3>
+                <p class="text-blue-600 font-bold tracking-tight text-lg mb-8">Azelda Homes · Ternopil State Medical University</p>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-8 mb-10" id="scholarStats">
+                    <!-- Skeleton loaders shown while fetching -->
+                    <div>
+                        <div id="stat-citations" class="text-4xl font-extrabold text-slate-900 mb-1">
+                            <span class="scholar-skeleton inline-block w-16 h-9 rounded-lg align-middle"></span>
+                        </div>
+                        <div class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Total Citations</div>
+                    </div>
+                    <div>
+                        <div id="stat-hindex" class="text-4xl font-extrabold text-slate-900 mb-1">
+                            <span class="scholar-skeleton inline-block w-10 h-9 rounded-lg align-middle"></span>
+                        </div>
+                        <div class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">h-index</div>
+                    </div>
+                    <div>
+                        <div id="stat-i10" class="text-4xl font-extrabold text-slate-900 mb-1">
+                            <span class="scholar-skeleton inline-block w-10 h-9 rounded-lg align-middle"></span>
+                        </div>
+                        <div class="text-[10px] uppercase font-bold text-slate-400 tracking-widest">i10-index</div>
+                    </div>
+                </div>
+                <p class="text-slate-500 mb-10 leading-relaxed text-sm italic border-l-2 border-slate-200 pl-6">
+                    "We build upon the work of those before us. We practice rigorous attribution and a collaborative spirit, citing the work of peers and researchers with absolute precision."
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="https://scholar.google.com/citations?user=XT483uIAAAAJ&hl=en" target="_blank" rel="noopener noreferrer"
+                       class="bg-slate-900 text-white px-8 py-4 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-600 transition-all flex items-center gap-3">
+                        Live Scholar Portfolio <i class="fas fa-external-link-alt text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<footer class="bg-black text-white pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-4 md:grid-cols-2 gap-16 mb-20">
+            <div class="col-span-2">
+                <a href="/" class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 rounded-full border border-blue-600 flex items-center justify-center">
+                        <i class="fas fa-microscope text-blue-600"></i>
+                    </div>
+                    <span class="font-bold text-2xl tracking-tighter">RESEARCH <span class="text-blue-600">JUNCTION</span></span>
+                </a>
+                <p class="text-gray-400 text-lg leading-relaxed max-w-sm">
+                    Empowering global medical professionals to transform research from fragmented data into high-impact publications.
+                </p>
+            </div>
+            <div>
+                <h5 class="font-bold text-xs uppercase tracking-[0.2em] text-blue-500 mb-8">Ecosystem</h5>
+                <ul class="space-y-4 text-gray-400 text-sm font-medium">
+                    <li><a href="/#tracks"        class="hover:text-white transition">Access Tracks</a></li>
+                    <li><a href="/#workflow"       class="hover:text-white transition">The Workflow</a></li>
+                    <li><a href="/pulse.html"      class="hover:text-white transition">The Pulse (Insights)</a></li>
+                    <li><a href="/#accountability" class="hover:text-white transition">Accountability</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold text-xs uppercase tracking-[0.2em] text-blue-500 mb-8">Contact</h5>
+                <ul class="space-y-4 text-gray-400 text-sm">
+                    <li class="flex items-center gap-3">
+                        <i class="fas fa-envelope text-blue-600"></i>
+                        <a href="mailto:review@researchjunction.com" class="hover:text-white transition">review@researchjunction.com</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="pt-10 border-t border-gray-900 text-center text-gray-500 text-xs tracking-widest uppercase">
+            &copy; 2026 Research Junction. Collaborative Science, Global Impact.
+        </div>
+    </div>
+</footer>
+
+<!-- GATE MODAL -->
+<div id="gateModal" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-xl flex items-center justify-center hidden p-6">
+    <div class="bg-white w-full max-w-lg rounded-[40px] overflow-hidden shadow-2xl">
+        <div class="p-10 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+            <h3 class="h-tech-heading text-xl font-bold">Community Entry</h3>
+            <button onclick="document.getElementById('gateModal').classList.add('hidden')" class="text-slate-400 hover:text-black">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-10 space-y-8">
+            <label class="flex gap-4 cursor-pointer group">
+                <input type="checkbox" class="community-check w-6 h-6 rounded border-slate-200 text-blue-600 mt-1">
+                <span class="text-sm text-slate-600 leading-relaxed group-hover:text-black transition">
+                    I acknowledge that authorship is earned through <b>ICMJE criteria</b>, not by payment.
+                </span>
+            </label>
+            <label class="flex gap-4 cursor-pointer group">
+                <input type="checkbox" class="community-check w-6 h-6 rounded border-slate-200 text-blue-600 mt-1">
+                <span class="text-sm text-slate-600 leading-relaxed group-hover:text-black transition">
+                    I understand the <b>Continuity Clause</b> — membership must remain active to retain authorship.
+                </span>
+            </label>
+            <label class="flex gap-4 cursor-pointer group">
+                <input type="checkbox" class="community-check w-6 h-6 rounded border-slate-200 text-blue-600 mt-1">
+                <span class="text-sm text-slate-600 leading-relaxed group-hover:text-black transition">
+                    I am prepared for the <b>Thick Skin Rule</b> — blunt professional critique of my work.
+                </span>
+            </label>
+            <button onclick="proceedToCommunityCheckout()"
+                    class="w-full bg-slate-900 text-white py-6 rounded-2xl font-bold shadow-2xl hover:bg-blue-600 transition-all">
+                Agree &amp; Proceed to Enrollment
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ── Scholar stats — read directly from Firebase ───────────────
+// Stats are stored at firebase path: scholar_cache
+// Update them using scholar-seed.html whenever your count changes.
+// No scraping, no external APIs, no 403s — just your own data.
+async function loadScholarStats() {
+    const DB = 'https://insight-3bbec-default-rtdb.firebaseio.com';
+    try {
+        const res  = await fetch(`${DB}/scholar_cache.json`);
+        if (!res.ok) throw new Error('Firebase ' + res.status);
+
+        const data = await res.json();
+
+        // data will be null if scholar_cache doesn't exist in Firebase yet
+        if (!data || data.citations == null) {
+            throw new Error('No stats in cache yet — run scholar-seed.html');
+        }
+
+        animateStat('stat-citations', data.citations);
+        animateStat('stat-hindex',    data.hIndex    ?? '—');
+        animateStat('stat-i10',       data.i10Index  ?? '—');
+
+        document.getElementById('scholarLiveBadge').style.display = 'inline-flex';
+
+    } catch (err) {
+        console.warn('Scholar stats:', err.message);
+        // Show dashes cleanly — user should run scholar-seed.html
+        animateStat('stat-citations', '—');
+        animateStat('stat-hindex',    '—');
+        animateStat('stat-i10',       '—');
+    }
+}
+
+function animateStat(elemId, value) {
+    const el = document.getElementById(elemId);
+    if (!el) return;
+    el.innerHTML = `<span class="stat-count">${value}</span>`;
+}
+
+// ── Community checkout ────────────────────────────────────────
+function proceedToCommunityCheckout() {
+    const checks = document.querySelectorAll('.community-check');
+    const allChecked = Array.from(checks).every(c => c.checked);
+    if (!allChecked) {
+        alert('Please agree to all terms before proceeding.');
+        return;
+    }
+    // TODO: Replace with your Stripe link for the $10/mo Community plan
+    window.location.href = 'https://buy.stripe.com/aFadR2biB3m3dUHaLJ8N201';
+}
+
+loadScholarStats();
+</script>
+</body>
+</html>

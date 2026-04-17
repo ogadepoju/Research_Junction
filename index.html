@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Junction | Collaborative Science, Global Impact</title>
+    <meta name="description" content="Join a global intelligence hub for medical, nursing, and pharmacy professionals. From foundational learning to high-impact journal publication.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@700&display=swap');
+        
+        :root {
+            --primary: #0f172a;
+            --brand-blue: #0b66c2;
+            --secondary: #f8fafc;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            background-color: var(--secondary);
+            color: #1e293b;
+        }
+
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+
+        .glass-nav {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .nav-link:hover {
+            color: var(--brand-blue);
+            background: rgba(11,102,194,0.05);
+            border-radius: 9999px;
+        }
+
+        .animated-bg {
+            background: linear-gradient(-45deg, #0f172a, #0b66c2, #1e293b, #0f172a);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        @keyframes gradient {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .card-hover { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+        .card-hover:hover { transform: translateY(-10px); box-shadow: 0 25px 30px -10px rgba(0,0,0,0.1); }
+
+        .reality-border { border-left: 4px solid var(--brand-blue); }
+
+        .pulse-tag { animation: pulse-anim 2s infinite; }
+        @keyframes pulse-anim { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+        @keyframes hpulse { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
+    </style>
+</head>
+<body>
+
+<nav class="fixed w-full z-50 glass-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+            <a href="/" class="flex items-center gap-2">
+                <div class="w-10 h-10 border-2 border-blue-600 flex items-center justify-center">
+                    <i class="text-blue-600 text-xl"><img src="logo.png"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-xl leading-none text-black tracking-tighter">RESEARCH <span class="text-blue-600">JUNCTION</span></span>
+                    <span class="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Collaborative Science</span>
+                </div>
+            </a>
+            <div class="hidden md:flex space-x-2 items-center">
+                <a href="#tracks"         class="nav-link text-gray-600">Access Tracks</a>
+                <a href="#workflow"       class="nav-link text-gray-600">Workflow</a>
+                <a href="#accountability" class="nav-link text-gray-600">Accountability</a>
+                <a href="/pulse.html"     class="nav-link text-gray-600">Insights</a>
+                <a href="/manuscript.html" class="ml-4 bg-blue-600 text-white px-6 py-2 rounded-full text-xs font-bold hover:bg-black transition-all shadow-lg uppercase tracking-widest">Submit Manuscript</a>
+            </div>
+    <!-- Mobile hamburger -->
+            <button id="menuBtn" class="md:hidden text-gray-600 hover:text-blue-600 p-2" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-2">
+        <a href="/" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">Home</a>
+        <a href="/#tracks" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">Access Tracks</a>
+        <a href="/manuscript.html" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">The Accelerator</a>
+        <a href="/pulse.html" class="block py-2 text-sm font-semibold text-gray-600 hover:text-blue-600 uppercase tracking-widest">The Pulse</a>
+        <a href="/manuscript.html" class="block w-full text-center py-3 bg-blue-600 text-white rounded-full text-xs font-bold hover:bg-black transition uppercase tracking-widest">Submit Manuscript</a>
+    </div>
+</nav>
+
+<header class="relative pt-32 pb-24 md:pt-52 md:pb-40 animated-bg overflow-hidden text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="max-w-4xl">
+            <span class="inline-block py-1.5 px-4 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold mb-6 border border-blue-500/30 uppercase tracking-[0.2em]">Medical Excellence Ecosystem</span>
+            <h1 class="text-5xl md:text-8xl font-bold mb-8 leading-[1.1] tracking-tight">
+                Collaborative Research. <br><span class="text-blue-400">Professional Review.</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-12 leading-relaxed font-light">
+                Join a global intelligence hub for medical, nursing, and pharmacy professionals. From foundational learning to high-impact journal publication.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-5">
+                <a href="#tracks" class="bg-blue-600 text-white px-10 py-5 rounded-full text-lg font-bold hover:bg-white hover:text-blue-900 transition-all text-center shadow-2xl shadow-blue-900/40">
+                    Explore Access Tracks
+                </a>
+                <button onclick="document.getElementById('leadModal').classList.remove('hidden')"
+                        class="bg-white/10 backdrop-blur-md border border-white/20 text-white px-10 py-5 rounded-full text-lg font-bold hover:bg-white/20 transition text-center">
+                    <i class="fas fa-check-circle mr-2 text-sm"></i> Manuscript Checklist
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="absolute -bottom-20 -right-20 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px]"></div>
+</header>
+
+<section id="accountability" class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-20 items-center">
+            <div>
+                <div class="reality-border pl-8 mb-8">
+                    <h2 class="text-4xl font-bold mb-6 italic leading-snug">"The Map vs. The Miles: <br>Our Shared Commitment."</h2>
+                    <p class="text-xl text-gray-600 leading-relaxed mb-6">
+                        Research Junction is not a passive certificate mill. We provide the 15+ journal reviewer expertise and the roadmap; you provide the miles. This is where rigorous science meets global collaboration.
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 gap-8 mt-10">
+                    <div class="border-t border-gray-100 pt-4">
+                        <span class="text-blue-600 text-3xl font-bold">15+</span>
+                        <p class="text-xs uppercase font-bold tracking-widest text-gray-400 mt-2">Active Journals</p>
+                    </div>
+                    <div class="border-t border-gray-100 pt-4">
+                        <span class="text-blue-600 text-3xl font-bold">Global</span>
+                        <p class="text-xs uppercase font-bold tracking-widest text-gray-400 mt-2">Collaborative Teams</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-900 p-12 rounded-[40px] text-white shadow-2xl">
+                <h3 class="text-2xl font-bold mb-8">Rigor &amp; Expectations</h3>
+                <ul class="space-y-6">
+                    <li class="flex gap-4"><i class="fas fa-bolt text-blue-400 mt-1"></i><span class="text-gray-300"><b>Active Participation:</b> Weekly tasks for community collaborators.</span></li>
+                    <li class="flex gap-4"><i class="fas fa-bolt text-blue-400 mt-1"></i><span class="text-gray-300"><b>Critical Feedback:</b> Transparent, professional peer reviews.</span></li>
+                    <li class="flex gap-4"><i class="fas fa-bolt text-blue-400 mt-1"></i><span class="text-gray-300"><b>Output Focused:</b> We measure success by publication-ready drafts.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="tracks" class="py-24 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-20">
+            <h2 class="text-5xl font-bold mb-6">Access Tracks</h2>
+            <p class="text-gray-500 text-lg max-w-2xl mx-auto">Select the tier that matches your current academic stage.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+
+            <!-- Teaching Track -->
+            <div class="bg-white p-10 rounded-[32px] card-hover border border-gray-100 flex flex-col">
+                <div class="mb-6">
+                    <span class="text-blue-600 font-extrabold text-sm uppercase tracking-widest">The Academy</span>
+                    <h3 class="text-2xl font-bold mt-2">Teaching Track</h3>
+                    <p class="text-sm text-gray-400 font-medium italic">For absolute beginners</p>
+                </div>
+                <div class="text-5xl font-bold mb-8">$30<span class="text-lg text-gray-400 font-normal">/mo</span></div>
+                <div class="space-y-4 mb-10 flex-grow">
+                    <p class="text-gray-600 text-sm leading-relaxed">Highly intensive, mentor-led curriculum designed to build your research foundation from scratch.</p>
+                    <div class="h-px bg-gray-100"></div>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-blue-500 mt-1"></i> Intensive Assignments</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-blue-500 mt-1"></i> Weekly Teaching Modules</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-blue-500 mt-1"></i> Foundational Methods</li>
+                    </ul>
+                </div>
+                <a href="/academy.html" class="block w-full py-4 bg-black text-white rounded-full font-bold hover:bg-blue-600 transition shadow-lg text-center">Start Learning</a>
+            </div>
+
+            <!-- Research Community -->
+            <div class="bg-blue-600 p-10 rounded-[32px] card-hover text-white flex flex-col shadow-2xl shadow-blue-900/30 relative transform scale-105 z-10">
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] py-1 px-4 rounded-full font-bold uppercase tracking-widest">Active Hub</div>
+                <div class="mb-6">
+                    <span class="text-blue-200 font-extrabold text-sm uppercase tracking-widest">The Lab</span>
+                    <h3 class="text-2xl font-bold mt-2">Research Community</h3>
+                    <p class="text-sm text-blue-200 font-medium italic">For experienced contributors</p>
+                </div>
+                <div class="text-5xl font-bold mb-8">$10<span class="text-lg text-blue-200 font-normal">/mo</span></div>
+                <div class="space-y-4 mb-10 flex-grow">
+                    <p class="text-blue-100 text-sm leading-relaxed">Join active teams and complete professional tasks on multiple ongoing research projects.</p>
+                    <div class="h-px bg-blue-500/30"></div>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-white mt-1"></i> Multi-Project Collaboration</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-white mt-1"></i> Specialized Task-Force</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-white mt-1"></i> Professional Networking</li>
+                    </ul>
+                </div>
+                <a href="/community.html" class="block w-full py-4 bg-white text-blue-600 rounded-full font-bold hover:bg-black hover:text-white transition shadow-lg text-center">Join a Project</a>
+            </div>
+
+            <!-- Manuscript Mastery -->
+            <div class="bg-white p-10 rounded-[32px] card-hover border border-gray-100 flex flex-col">
+                <div class="mb-6">
+                    <span class="text-blue-600 font-extrabold text-sm uppercase tracking-widest">The Review Board</span>
+                    <h3 class="text-2xl font-bold mt-2">Manuscript Mastery</h3>
+                    <p class="text-sm text-gray-400 font-medium italic">For completed drafts</p>
+                </div>
+                <div class="text-5xl font-bold mb-8">$50<span class="text-lg text-gray-400 font-normal">/once</span></div>
+                <div class="space-y-4 mb-10 flex-grow">
+                    <p class="text-gray-600 text-sm leading-relaxed">Direct professional vetting of your full manuscript by a reviewer for 15+ high-impact journals.</p>
+                    <div class="h-px bg-gray-100"></div>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-blue-500 mt-1"></i> Professional Peer-Review</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-blue-500 mt-1"></i> Journal Target Strategy</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check text-blue-500 mt-1"></i> Logical Flow Audit</li>
+                    </ul>
+                </div>
+                <a href="/manuscript.html" class="block w-full py-4 bg-black text-white rounded-full font-bold hover:bg-blue-600 transition shadow-lg text-center">Submit for Review</a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section id="workflow" class="py-24 bg-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row gap-20 items-center">
+            <div class="lg:w-1/2">
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 leading-tight">The Path to <br><span class="text-blue-600">Publication.</span></h2>
+                <p class="text-xl text-gray-600 mb-8 leading-relaxed">We have streamlined the path from a research question to a published manuscript. Follow our proven workflow designed by expert reviewers.</p>
+            </div>
+            <div class="lg:w-1/2">
+                <div class="space-y-12">
+                    <div class="flex gap-6 items-center">
+                        <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl font-bold shrink-0">1</div>
+                        <div><h4 class="font-bold text-xl">Foundational Mastery</h4><p class="text-gray-500">Master the basics via The Academy track.</p></div>
+                    </div>
+                    <div class="flex gap-6 items-center">
+                        <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl font-bold shrink-0">2</div>
+                        <div><h4 class="font-bold text-xl">Collaborative Execution</h4><p class="text-gray-500">Apply skills in The Lab on real medical projects.</p></div>
+                    </div>
+                    <div class="flex gap-6 items-center">
+                        <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl font-bold shrink-0">3</div>
+                        <div><h4 class="font-bold text-xl">Professional Vetting</h4><p class="text-gray-500">Final peer-review before journal submission.</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- INSIGHTS — live from Firebase -->
+<section id="insights" class="py-24 bg-slate-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <div>
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="w-2 h-2 rounded-full bg-red-500 pulse-tag"></span>
+                    <span class="text-red-400 font-bold uppercase tracking-widest text-xs">Live Intelligence</span>
+                </div>
+                <h2 class="text-4xl font-bold">The Research <span class="text-blue-400">Pulse</span></h2>
+                <p class="text-gray-400 mt-4 max-w-xl">Curated medical breakthroughs and journal intelligence from top global sources.</p>
+            </div>
+            <a href="/pulse.html" class="px-8 py-3 rounded-full border border-white/20 hover:bg-white hover:text-black transition font-bold">Visit Newsroom</a>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8" id="homePulseGrid">
+            <!-- Skeletons -->
+            <div class="p-8 bg-white/5 border border-white/10 rounded-3xl">
+                <div style="height:10px;background:rgba(255,255,255,0.08);border-radius:6px;width:50%;margin-bottom:18px;animation:hpulse 1.5s infinite"></div>
+                <div style="height:18px;background:rgba(255,255,255,0.08);border-radius:6px;width:90%;margin-bottom:10px;animation:hpulse 1.5s infinite"></div>
+                <div style="height:18px;background:rgba(255,255,255,0.08);border-radius:6px;width:70%;margin-bottom:20px;animation:hpulse 1.5s infinite"></div>
+                <div style="height:10px;background:rgba(255,255,255,0.05);border-radius:6px;width:80%;margin-bottom:8px;animation:hpulse 1.5s infinite"></div>
+                <div style="height:10px;background:rgba(255,255,255,0.05);border-radius:6px;width:60%;animation:hpulse 1.5s infinite"></div>
+            </div>
+            <div class="p-8 bg-white/5 border border-white/10 rounded-3xl">
+                <div style="height:10px;background:rgba(255,255,255,0.08);border-radius:6px;width:45%;margin-bottom:18px;animation:hpulse 1.5s infinite"></div>
+                <div style="height:18px;background:rgba(255,255,255,0.08);border-radius:6px;width:85%;margin-bottom:10px;animation:hpulse 1.5s infinite"></div>
+                <div style="height:18px;background:rgba(255,255,255,0.08);border-radius:6px;width:65%;margin-bottom:20px;animation:hpulse 1.5s infinite"></div>
+                <div style="height:10px;background:rgba(255,255,255,0.05);border-radius:6px;width:75%;animation:hpulse 1.5s infinite"></div>
+            </div>
+            <div class="p-8 bg-white/5 border border-white/10 rounded-3xl">
+                <div style="height:10px;background:rgba(255,255,255,0.08);border-radius:6px;width:55%;margin-bottom:18px;animation:hpulse 1.5s infinite"></div>
+                <div style="height:18px;background:rgba(255,255,255,0.08);border-radius:6px;width:80%;margin-bottom:10px;animation:hpulse 1.5s infinite"></div>
+                <div style="height:18px;background:rgba(255,255,255,0.08);border-radius:6px;width:75%;margin-bottom:20px;animation:hpulse 1.5s infinite"></div>
+                <div style="height:10px;background:rgba(255,255,255,0.05);border-radius:6px;width:70%;animation:hpulse 1.5s infinite"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="bg-black text-white pt-20 pb-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-4 md:grid-cols-2 gap-16 mb-20">
+            <div class="col-span-2">
+                <a href="/" class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 rounded-full border border-blue-600 flex items-center justify-center">
+                        <i class="fas fa-microscope text-blue-600"></i>
+                    </div>
+                    <span class="font-bold text-2xl tracking-tighter">RESEARCH <span class="text-blue-600">JUNCTION</span></span>
+                </a>
+                <p class="text-gray-400 text-lg leading-relaxed max-w-sm">
+                    Empowering global medical professionals to transform research from fragmented data into high-impact publications.
+                </p>
+            </div>
+            <div>
+                <h5 class="font-bold text-xs uppercase tracking-[0.2em] text-blue-500 mb-8">Ecosystem</h5>
+                <ul class="space-y-4 text-gray-400 text-sm font-medium">
+                    <li><a href="#tracks"         class="hover:text-white transition">Access Tracks</a></li>
+                    <li><a href="#workflow"        class="hover:text-white transition">The Workflow</a></li>
+                    <li><a href="/pulse.html"      class="hover:text-white transition">The Pulse (Insights)</a></li>
+                    <li><a href="#accountability"  class="hover:text-white transition">Accountability</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold text-xs uppercase tracking-[0.2em] text-blue-500 mb-8">Contact</h5>
+                <ul class="space-y-4 text-gray-400 text-sm">
+                    <li class="flex items-center gap-3"><i class="fas fa-envelope text-blue-600"></i>
+                        <a href="mailto:review@researchjunction.com" class="hover:text-white transition">review@researchjunction.com</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="pt-10 border-t border-gray-900 text-center text-gray-500 text-xs tracking-widest uppercase">
+            &copy; 2026 Research Junction. Collaborative Science, Global Impact.
+        </div>
+    </div>
+</footer>
+
+<!-- LEAD MODAL -->
+<div id="leadModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 hidden px-4">
+    <div class="bg-white rounded-[40px] p-10 max-w-lg w-full relative">
+        <button onclick="document.getElementById('leadModal').classList.add('hidden')" class="absolute top-6 right-8 text-gray-400 hover:text-black">
+            <i class="fas fa-times text-2xl"></i>
+        </button>
+        <div class="text-center">
+            <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3 class="text-3xl font-bold mb-4">Submission Ready?</h3>
+            <p class="text-gray-500 mb-10">Get our professional 25-point Manuscript Checklist used by our expert reviewers to vet publications for Q1 journals.</p>
+            <form id="checklistForm" class="space-y-4">
+                <input type="email" id="checklistEmail" required placeholder="Academic Email Address"
+                       class="w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-600 transition text-lg">
+                <button type="submit" class="w-full py-5 bg-blue-600 text-white rounded-full font-bold hover:bg-black transition shadow-xl shadow-blue-900/20 text-lg">
+                    Download Checklist
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="/shared.js"></script>
+<script>
+document.getElementById('checklistForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Checklist sent to ' + document.getElementById('checklistEmail').value + '!');
+    document.getElementById('leadModal').classList.add('hidden');
+});
+
+// Load Pulse preview cards
+(async function() {
+    const grid = document.getElementById('homePulseGrid');
+    try {
+        const snap  = await window.db.ref('pulse/posts').get();
+        const posts = snap.exists()
+            ? Object.values(snap.val()).sort((a,b) => new Date(b.publishedAt) - new Date(a.publishedAt))
+            : [];
+
+        if (!posts.length) {
+            grid.innerHTML = `
+                <div class="p-8 bg-white/5 border border-white/10 rounded-3xl md:col-span-3 text-center py-12">
+                    <i class="fas fa-satellite-dish text-blue-400 text-3xl mb-4 block opacity-40"></i>
+                    <p class="text-gray-400 text-sm">The Pulse is warming up. Live medical insights will appear here shortly.</p>
+                    <a href="/pulse.html" class="text-blue-400 font-bold text-xs uppercase tracking-widest mt-4 inline-block hover:text-white transition">
+                        Visit The Pulse <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </div>`;
+            return;
+        }
+
+        grid.innerHTML = posts.slice(0, 3).map(post => `
+            <a href="/pulse.html" class="p-8 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition group cursor-pointer block">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-[10px] text-blue-400 font-extrabold uppercase tracking-widest">${escHtml(post.source)}</span>
+                    <span style="font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;padding:2px 8px;border-radius:999px;background:${post.format==='full'?'rgba(37,99,235,0.25)':'rgba(217,119,6,0.25)'};color:${post.format==='full'?'#93c5fd':'#fcd34d'}">
+                        ${post.format === 'full' ? '✦ Full' : '⚡ Digest'}
+                    </span>
+                </div>
+                <h4 class="text-xl font-bold mb-4 group-hover:text-blue-400 transition leading-snug">${escHtml(post.title)}</h4>
+                <p class="text-gray-400 text-sm leading-relaxed mb-6">${escHtml(post.summary)}</p>
+                <div class="flex items-center gap-2 text-xs font-bold text-white/40 group-hover:text-blue-400 transition">
+                    <i class="fas fa-arrow-right text-blue-400"></i>
+                    ${post.format === 'full' ? 'READ ANALYSIS' : 'VIEW DIGEST'}
+                </div>
+            </a>`).join('');
+
+    } catch(err) {
+        grid.innerHTML = '';
+        console.warn('Pulse snippet error:', err);
+    }
+})();
+
+function escHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
