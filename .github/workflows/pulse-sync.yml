@@ -26,7 +26,7 @@ jobs:
             const FIREBASE_URL = 'insight-3bbec-default-rtdb.firebaseio.com';
             const FIREBASE_SEC = process.env.FIREBASE_SECRET;
             const GEMINI_KEY   = process.env.GEMINI_API_KEY;
-            const GEMINI_MODEL = 'gemini-2.5-flash';
+            const GEMINI_MODEL = 'gemini-2.0-flash';
             const MAX_POSTS    = 50;
 
             const SOURCES = [
@@ -51,12 +51,18 @@ jobs:
             async function callGemini(prompt) {
               const systemText = 'You are writing for Research Junction by Sandra Bakare MD/MBA. ' +
                 'Voice: authoritative, accessible, direct. Audience: medical researchers. ' +
-                'CRITICAL: Return raw JSON only. No markdown fences. Start with { end with }.';
+                'You MUST respond with a single raw JSON object only. ' +
+                'Do not include any text before or after the JSON. ' +
+                'Do not use markdown code fences. ' +
+                'The response must start with { and end with }.';
               const body = JSON.stringify({
                 systemInstruction: { parts: [{ text: systemText }] },
                 contents: [{ role: 'user', parts: [{ text: prompt }] }],
                 tools: [{ googleSearch: {} }],
-                generationConfig: { maxOutputTokens: 1500, temperature: 0.7 },
+                generationConfig: {
+                  maxOutputTokens: 2000,
+                  temperature: 0.5,
+                },
               });
               const options = {
                 hostname: 'generativelanguage.googleapis.com',
@@ -68,9 +74,26 @@ jobs:
               const data = JSON.parse(rb);
               if (status === 429) throw new Error('RATE_LIMITED');
               if (status !== 200) throw new Error('Gemini ' + status + ': ' + (data.error || {}).message);
-              let text = ((data.candidates || [])[0] || {}).content;
-              text = (text && text.parts || []).filter(p => p.text).map(p => p.text).join('');
-              return text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+
+              // Extract text from all parts including thinking parts
+              const candidate = (data.candidates || [])[0] || {};
+              const parts = (candidate.content && candidate.content.parts) || [];
+              // Collect only non-thinking text parts
+              let text = parts
+                .filter(p => p.text && !p.thought)
+                .map(p => p.text)
+                .join('');
+
+              // If empty, try all parts
+              if (!text.trim()) {
+                text = parts.filter(p => p.text).map(p => p.text).join('');
+              }
+
+              // Strip markdown fences
+              text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+
+              console.log('Raw response preview:', text.slice(0, 200));
+              return text;
             }
 
             async function firebaseGet(path) {
@@ -99,19 +122,29 @@ jobs:
             async function generatePost(source, usedUrls) {
               const avoid = usedUrls.slice(-10).join(', ') || 'none yet';
               const prompt =
-                'Find the most impactful recent medical research article (last 2 weeks) from ' + source.name + '.\n' +
+                'Search for the most impactful recent medical research article published in the last 2 weeks from ' + source.name + '.\n' +
                 'Avoid these URLs: ' + avoid + '\n\n' +
-                'Return ONLY this JSON (no fences):\n' +
-                '{"title":"headline under 12 words","source":"' + source.name + '","sourceUrl":"article URL",' +
-                '"format":"full or digest","category":"Clinical Research or Oncology or Cardiology or AI in Medicine or ' +
-                'Infectious Disease or Mental Health or Surgery or Public Health or Neurology or Pharmacology",' +
-                '"summary":"2 sentence summary","content":"markdown post content","publishedAt":"' + new Date().toISOString() + '"}';
+                'Respond with ONLY a JSON object in this exact format, no other text:\n' +
+                '{\n' +
+                '  "title": "headline under 12 words",\n' +
+                '  "source": "' + source.name + '",\n' +
+                '  "sourceUrl": "full article URL",\n' +
+                '  "format": "full",\n' +
+                '  "category": "one of: Clinical Research, Oncology, Cardiology, AI in Medicine, Infectious Disease, Mental Health, Surgery, Public Health, Neurology, Pharmacology",\n' +
+                '  "summary": "2 sentence plain language summary",\n' +
+                '  "content": "## What The Research Found\\n[findings]\\n## Why This Matters\\n[implications]\\n## Research Junction Take\\n[commentary]",\n' +
+                '  "publishedAt": "' + new Date().toISOString() + '"\n' +
+                '}';
 
               const raw = await callGemini(prompt);
               const start = raw.indexOf('{');
               const end = raw.lastIndexOf('}');
-              if (start === -1 || end === -1) throw new Error('No JSON in response');
+              if (start === -1 || end === -1) {
+                console.log('Full response was:', raw.slice(0, 500));
+                throw new Error('No JSON in response');
+              }
               const post = JSON.parse(raw.slice(start, end + 1));
+              if (!post.title || !post.sourceUrl) throw new Error('Post missing required fields');
               post.id = 'post_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
               post.publishedAt = post.publishedAt || new Date().toISOString();
               return post;
